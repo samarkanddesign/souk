@@ -1,0 +1,26 @@
+{
+  "name": "souk",
+  "description": "The storefront for Samarkand Design",
+  "private": true,
+  "dependencies": {
+    "next": "^6.0.3",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/next": "^2.4.11",
+    "@zeit/next-typescript": "^1.0.1",
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "parser": "typescript"
+  }
+}
