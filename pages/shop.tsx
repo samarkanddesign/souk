@@ -1,7 +1,12 @@
 import withData from '../lib/apollo';
 import gql from 'graphql-tag';
 import { graphql, DataProps } from 'react-apollo';
+import { prop } from 'ramda';
+import { Option } from 'catling';
+
 import Navbar from 'components/navbar';
+import { PagedProducts } from 'types/gql';
+import { ProductTile } from 'components/product-tile';
 
 const allProducts = gql`
   query {
@@ -15,35 +20,26 @@ const allProducts = gql`
   }
 `;
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-}
-
 interface ProductsQuery {
-  products: {
-    items: Product[];
-  };
+  products: PagedProducts;
 }
 
-interface Props extends DataProps<ProductsQuery, {}> {}
+type Props = DataProps<ProductsQuery, {}>;
 
 function Shop({ data }: Props) {
   return (
     <div>
       <Navbar />
-      {data.products &&
-        data.products.items && (
+      {Option(data.products)
+        .map(prop('items'))
+        .map(items => (
           <ul>
-            {data.products.items.map(product => (
-              <li key={product.id}>
-                <h2>{product.name}</h2>
-                £{(product.price / 100).toFixed(2)}
-              </li>
+            {items.map(product => (
+              <ProductTile product={product} key={product.id} />
             ))}
           </ul>
-        )}
+        ))
+        .get()}
     </div>
   );
 }
