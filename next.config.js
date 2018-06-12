@@ -4,6 +4,7 @@ const path = require('path');
 const alias = {
   components: path.resolve(__dirname, 'components'),
   pages: path.resolve(__dirname, 'pages'),
+  lib: path.resolve(__dirname, 'lib'),
 };
 module.exports = withTypescript({
   webpack: config => {
