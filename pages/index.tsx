@@ -1,11 +1,10 @@
 import * as React from 'react';
-import Navbar from 'components/navbar';
+import Layout from 'components/layout';
 
 export default function Home() {
   return (
-    <div>
-      <Navbar />
-      Welcome to next.js!
-    </div>
+    <Layout>
+      <div>Welcome to Samarkand Souk</div>
+    </Layout>
   );
 }
