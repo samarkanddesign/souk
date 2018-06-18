@@ -1,3 +1,12 @@
+logs
+*.log
+npm-debug.log*
+.DS_Store
+
+coverage
 node_modules
-.next
-yarn-error.log
+build
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
