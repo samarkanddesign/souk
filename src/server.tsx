@@ -3,6 +3,7 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import express from 'express';
 import { renderToString } from 'react-dom/server';
+import { renderStylesToString } from 'emotion-server';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
@@ -35,7 +36,7 @@ server
 
     await getDataFromTree(WrappedApp);
 
-    const markup = renderToString(WrappedApp);
+    const markup = renderStylesToString(renderToString(WrappedApp));
 
     if (context.url) {
       res.redirect(context.url);

@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { DataProps, graphql, Query } from 'react-apollo';
 
+import { ProductGrid } from '../components/ProductGrid';
+
 const allProducts = gql`
   query allProducts($page: Int) {
     products(page: $page) {
@@ -14,6 +16,9 @@ const allProducts = gql`
         name
         price
         slug
+      }
+      pagination {
+        totalPages
       }
     }
   }
@@ -37,21 +42,26 @@ const Shop = (props: Props) => {
     <div>
       <h1>Shop</h1>
       <p>Page {page}</p>
-      {page > 1 && (
-        <Link to={{ pathname: '/shop', search: `?page=${page - 1}` }}>
-          Previous
-        </Link>
-      )}
-      <Link to={{ pathname: '/shop', search: `?page=${page + 1}` }}>Next</Link>
       <Query query={allProducts} variables={{ page }}>
         {({ data }) => (
-          <ul>
+          <>
+            {page > 1 && (
+              <Link to={{ pathname: '/shop', search: `?page=${page - 1}` }}>
+                Previous
+              </Link>
+            )}
             {data.products &&
-              data.products.items &&
-              data.products.items.map((item: any) => (
-                <li key={item.id}>{item.name}</li>
-              ))}
-          </ul>
+              data.products.pagination.totalPages > page && (
+                <Link to={{ pathname: '/shop', search: `?page=${page + 1}` }}>
+                  Next
+                </Link>
+              )}
+
+            {data.products &&
+              data.products.items && (
+                <ProductGrid products={data.products.items} />
+              )}
+          </>
         )}
       </Query>
     </div>
