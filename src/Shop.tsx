@@ -4,11 +4,11 @@ import * as qs from 'qs';
 import { Option } from 'catling';
 import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { DataProps, graphql } from 'react-apollo';
+import { DataProps, graphql, Query } from 'react-apollo';
 
 const allProducts = gql`
-  query {
-    products {
+  query allProducts($page: Int) {
+    products(page: $page) {
       items {
         id
         name
@@ -43,15 +43,19 @@ const Shop = (props: Props) => {
         </Link>
       )}
       <Link to={{ pathname: '/shop', search: `?page=${page + 1}` }}>Next</Link>
-      <ul>
-        {props.data.products &&
-          props.data.products.items &&
-          props.data.products.items.map((item: any) => (
-            <li key={item.id}>{item.name}</li>
-          ))}
-      </ul>
+      <Query query={allProducts} variables={{ page }}>
+        {({ data }) => (
+          <ul>
+            {data.products &&
+              data.products.items &&
+              data.products.items.map((item: any) => (
+                <li key={item.id}>{item.name}</li>
+              ))}
+          </ul>
+        )}
+      </Query>
     </div>
   );
 };
 
-export default graphql<any>(allProducts)(Shop);
+export default Shop;
