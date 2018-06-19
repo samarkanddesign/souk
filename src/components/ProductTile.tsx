@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from 'react-emotion';
-
-// import { Product } from 'types/gql';
-import { spacing, typeSize } from './style';
 import { Link } from 'react-router-dom';
+
+import { spacing, typeSize } from './style';
+import { Product } from '../../types/gql';
 
 const ProductHeading = styled('h2')`
   color: #555;
@@ -17,7 +17,7 @@ const Tile = styled('li')`
 `;
 
 interface Props {
-  product: any;
+  product: Product;
 }
 
 function ProductLink({

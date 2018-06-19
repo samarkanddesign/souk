@@ -1,9 +1,8 @@
 import * as React from 'react';
-// import { Product } from 'types/gql';
 import styled from 'react-emotion';
-import { ProductTile } from './ProductTile';
 
-type Product = any;
+import { ProductTile } from './ProductTile';
+import { Product } from '../../types/gql';
 
 const ProductGridContainer = styled('ul')`
   margin: 0;

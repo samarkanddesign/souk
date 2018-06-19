@@ -4,9 +4,15 @@ import * as qs from 'qs';
 import { Option } from 'catling';
 import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { DataProps, graphql, Query } from 'react-apollo';
+import { Query } from 'react-apollo';
 
 import { ProductGrid } from '../components/ProductGrid';
+import { PagedProducts, ProductsRootQueryTypeArgs } from '../../types/gql';
+
+class AllProductsQuery extends Query<
+  { products?: PagedProducts },
+  ProductsRootQueryTypeArgs
+> {}
 
 const allProducts = gql`
   query allProducts($page: Int) {
@@ -24,11 +30,7 @@ const allProducts = gql`
   }
 `;
 
-interface ProductsQuery {
-  products: any;
-}
-
-type Props = RouteComponentProps<{}> & DataProps<ProductsQuery, {}>;
+type Props = RouteComponentProps<{}>;
 
 const Shop = (props: Props) => {
   const location = props.location;
@@ -42,28 +44,32 @@ const Shop = (props: Props) => {
     <div>
       <h1>Shop</h1>
       <p>Page {page}</p>
-      <Query query={allProducts} variables={{ page }}>
-        {({ data }) => (
-          <>
-            {page > 1 && (
-              <Link to={{ pathname: '/shop', search: `?page=${page - 1}` }}>
-                Previous
-              </Link>
-            )}
-            {data.products &&
-              data.products.pagination.totalPages > page && (
-                <Link to={{ pathname: '/shop', search: `?page=${page + 1}` }}>
-                  Next
+      <AllProductsQuery query={allProducts} variables={{ page }}>
+        {({ data }) => {
+          const products = Option(data).flatMap(d => Option(d.products));
+
+          return (
+            <>
+              {page > 1 && (
+                <Link to={{ pathname: '/shop', search: `?page=${page - 1}` }}>
+                  Previous
                 </Link>
               )}
 
-            {data.products &&
-              data.products.items && (
-                <ProductGrid products={data.products.items} />
-              )}
-          </>
-        )}
-      </Query>
+              {products
+                .filter(p => p.pagination.totalPages > page)
+                .map(() => (
+                  <Link to={{ pathname: '/shop', search: `?page=${page + 1}` }}>
+                    Next
+                  </Link>
+                ))
+                .get()}
+
+              {products.map(p => <ProductGrid products={p.items} />).get()}
+            </>
+          );
+        }}
+      </AllProductsQuery>
     </div>
   );
 };
