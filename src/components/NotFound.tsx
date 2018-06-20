@@ -1,8 +1,6 @@
 import * as React from 'react';
 
-interface Props {}
-
-export default function NotFound({  }: Props) {
+const NotFound = () => {
   return (
     <div>
       <h1>404 Not Found 🔎</h1>
@@ -12,4 +10,5 @@ export default function NotFound({  }: Props) {
       </p>
     </div>
   );
-}
+};
+export default NotFound;
