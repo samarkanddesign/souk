@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Product } from 'types/gql';
 import styled from 'react-emotion';
-import { ProductTile } from './product-tile';
+
+import { ProductTile } from './ProductTile';
+import { Product } from '../../types/gql';
 
 const ProductGridContainer = styled('ul')`
   margin: 0;
@@ -11,7 +12,6 @@ const ProductGridContainer = styled('ul')`
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
   grid-auto-rows: 1fr;
-
   &::before {
     content: '';
     width: 0;
@@ -19,7 +19,6 @@ const ProductGridContainer = styled('ul')`
     grid-row: 1 / 1;
     grid-column: 1 / 1;
   }
-
   & > *:first-child {
     grid-row: 1 / 1;
     grid-column: 1 / 1;
@@ -27,13 +26,13 @@ const ProductGridContainer = styled('ul')`
 `;
 
 interface Props {
-  children: Product[];
+  products: Product[];
 }
 
-export default function ProductGrid({ children }: Props) {
+export function ProductGrid({ products }: Props) {
   return (
     <ProductGridContainer>
-      {children.map(product => (
+      {products.map(product => (
         <ProductTile product={product} key={product.id} />
       ))}
     </ProductGridContainer>

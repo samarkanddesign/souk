@@ -1,8 +1,9 @@
+import * as React from 'react';
 import styled from 'react-emotion';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
-import { Product } from 'types/gql';
 import { spacing, typeSize } from './style';
+import { Product } from '../../types/gql';
 
 const ProductHeading = styled('h2')`
   color: #555;
@@ -26,11 +27,7 @@ function ProductLink({
   children: React.ReactNode;
   slug: string;
 }) {
-  return (
-    <Link href={`/product?slug=${slug}`}>
-      <a>{children}</a>
-    </Link>
-  );
+  return <Link to={`/product/${slug}`}>{children}</Link>;
 }
 
 export function ProductTile({ product }: Props) {
