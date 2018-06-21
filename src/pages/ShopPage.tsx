@@ -15,7 +15,7 @@ class AllProductsQuery extends Query<
 > {}
 
 const allProducts = gql`
-  query allProducts($page: Int) {
+  query AllProducts($page: Int) {
     products(page: $page) {
       items {
         id
@@ -32,7 +32,7 @@ const allProducts = gql`
 
 type Props = RouteComponentProps<{}>;
 
-const Shop = (props: Props) => {
+const ShopPage = (props: Props) => {
   const location = props.location;
   const page = Option(qs.parse(location.search, { ignoreQueryPrefix: true }))
     .flatMap(query => Option<string>(query.page))
@@ -74,4 +74,4 @@ const Shop = (props: Props) => {
   );
 };
 
-export default Shop;
+export default ShopPage;

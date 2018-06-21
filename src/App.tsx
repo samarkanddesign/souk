@@ -1,12 +1,22 @@
 import React from 'react';
 import { Link, Switch, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import './App.css';
-import Shop from './pages/Shop';
+import Home from './pages/HomePage';
+
+import ShopPage from './pages/ShopPage';
 import Navbar from './components/Navbar';
-import NotFound from './pages/NotFound';
-import styled from 'react-emotion';
+import NotFoundPage from './pages/NotFoundPage';
+import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
+import ProductPage from './pages/ProductPage';
+
+injectGlobal`
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+  }
+`;
 
 const Wrapper = styled('div')`
   max-width: 64rem;
@@ -20,8 +30,9 @@ const App = () => (
     <main>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/shop" component={Shop} />
-        <Route component={NotFound} />
+        <Route exact path="/shop" component={ShopPage} />
+        <Route exact path="/product/:slug" component={ProductPage} />
+        <Route component={NotFoundPage} />
       </Switch>
     </main>
   </Wrapper>
