@@ -11,6 +11,15 @@ export default function({ product }: Props) {
   return (
     <>
       <h1>{product.name}</h1>
+      {product.images.map(i => (
+        <div key={i.id}>
+          <img
+            style={{ maxWidth: '100%', height: 'auto' }}
+            src={i.url}
+            alt=""
+          />
+        </div>
+      ))}
       <Price price={product.price} salePrice={product.salePrice} />
       {Option(product.stockQty)
         .map(

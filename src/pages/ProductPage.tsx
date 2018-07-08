@@ -21,6 +21,10 @@ const SingleProduct = gql`
       price
       salePrice
       stockQty
+      images {
+        id
+        url
+      }
     }
   }
 `;
