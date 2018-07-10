@@ -9,6 +9,9 @@ import { InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
+import { Provider as ReduxProvider } from 'react-redux';
+
+import store from './store';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql', fetch });
 
@@ -28,9 +31,11 @@ server
     const context: any = {};
     const WrappedApp = (
       <ApolloProvider client={serverClient}>
-        <StaticRouter context={context} location={req.url}>
-          <App />
-        </StaticRouter>
+        <ReduxProvider store={store}>
+          <StaticRouter context={context} location={req.url}>
+            <App />
+          </StaticRouter>
+        </ReduxProvider>
       </ApolloProvider>
     );
 

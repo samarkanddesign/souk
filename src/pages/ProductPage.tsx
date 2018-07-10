@@ -6,15 +6,26 @@ import { Product } from '../../types/gql';
 import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
 import LoadingSpinner from '../components/LoadingSpinner';
-import styled from 'react-emotion';
-import { animation } from '../components/style';
 import NotFound from '../components/NotFound';
+import { connect } from 'react-redux';
 
-type Props = RouteComponentProps<{ slug: string }>;
+import { StoreAction } from '../store/reducers';
+import { Dispatch } from 'redux';
+import { AddProductToCart } from '../store/reducers/cartReducer';
+
+interface StateMappedToProps {}
+
+interface DispatchMappedToProps {
+  addToCart: (id: string) => void;
+}
+type Props = RouteComponentProps<{ slug: string }> &
+  StateMappedToProps &
+  DispatchMappedToProps;
 
 const SingleProduct = gql`
   query SingleProduct($slug: String) {
     product(slug: $slug) {
+      id
       name
       slug
       description
@@ -34,7 +45,7 @@ class SingleProductQuery extends Query<
   { slug: string }
 > {}
 
-const ProductPage = ({ match }: Props) => {
+const ProductPage = ({ match, addToCart }: Props) => {
   return (
     <SingleProductQuery
       query={SingleProduct}
@@ -48,7 +59,9 @@ const ProductPage = ({ match }: Props) => {
           <>
             {Option(data)
               .flatMap(d => Option(d.product))
-              .map(product => <ProductDetail product={product} />)
+              .map(product => (
+                <ProductDetail product={product} addToCart={addToCart} />
+              ))
               .getOrElse(<NotFound />)}
           </>
         );
@@ -57,4 +70,11 @@ const ProductPage = ({ match }: Props) => {
   );
 };
 
-export default ProductPage;
+export default connect<StateMappedToProps, DispatchMappedToProps>(
+  () => ({}),
+  (dispatch: Dispatch<StoreAction>) => {
+    return {
+      addToCart: (id: string) => dispatch(AddProductToCart(id)),
+    };
+  },
+)(ProductPage);

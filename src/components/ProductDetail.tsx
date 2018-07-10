@@ -5,9 +5,10 @@ import Price from './Price';
 
 interface Props {
   product: Product;
+  addToCart: (id: string) => void;
 }
 
-export default function({ product }: Props) {
+export const ProductDetail = ({ product, addToCart }: Props) => {
   return (
     <>
       <h1>{product.name}</h1>
@@ -28,6 +29,10 @@ export default function({ product }: Props) {
         )
         .get()}
       <div>{product.description}</div>
+
+      <button onClick={() => addToCart(product.id)}>Add To Cart</button>
     </>
   );
-}
+};
+
+export default ProductDetail;

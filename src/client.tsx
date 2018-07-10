@@ -3,9 +3,12 @@ import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { Provider as ReduxProvider } from 'react-redux';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-boost';
+
+import store from './store';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 
@@ -17,9 +20,11 @@ export const clientClient = new ApolloClient({
 
 hydrate(
   <ApolloProvider client={clientClient}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ReduxProvider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ReduxProvider>
   </ApolloProvider>,
   document.getElementById('root'),
 );

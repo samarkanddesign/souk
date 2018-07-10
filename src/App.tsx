@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Home from './pages/HomePage';
 
 import ShopPage from './pages/ShopPage';
@@ -8,6 +8,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
 import ProductPage from './pages/ProductPage';
+import Cart from './components/Cart';
 
 injectGlobal`
   body {
@@ -26,6 +27,9 @@ const Wrapper = styled('div')`
 
 const App = () => (
   <Wrapper>
+    <pre>
+      <Cart />
+    </pre>
     <Navbar />
     <main>
       <Switch>
