@@ -7,21 +7,24 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import { ProductGrid } from '../components/ProductGrid';
-import { PagedProducts, ProductsRootQueryTypeArgs } from '../../types/gql';
+import { PagedProducts, ProductListRootQueryTypeArgs } from '../../types/gql';
 
 class AllProductsQuery extends Query<
-  { products?: PagedProducts },
-  ProductsRootQueryTypeArgs
+  { productList?: PagedProducts },
+  ProductListRootQueryTypeArgs
 > {}
 
 const allProducts = gql`
   query AllProducts($page: Int) {
-    products(page: $page) {
-      items {
+    productList(page: $page) {
+      products {
         id
         name
         price
         slug
+        thumbnail {
+          url
+        }
       }
       pagination {
         totalPages
@@ -46,7 +49,7 @@ const ShopPage = (props: Props) => {
       <p>Page {page}</p>
       <AllProductsQuery query={allProducts} variables={{ page }}>
         {({ data }) => {
-          const products = Option(data).flatMap(d => Option(d.products));
+          const products = Option(data).flatMap(d => Option(d.productList));
 
           return (
             <>
@@ -65,7 +68,7 @@ const ShopPage = (props: Props) => {
                 ))
                 .get()}
 
-              {products.map(p => <ProductGrid products={p.items} />).get()}
+              {products.map(p => <ProductGrid products={p.products} />).get()}
             </>
           );
         }}

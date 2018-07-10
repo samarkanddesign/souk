@@ -7,7 +7,7 @@ export interface RootQueryType {
   categories: Category[] /** Get all categories */;
   category?: Category | null /** Get a single category by id or slug */;
   product?: Product | null /** Get a single product by id or slug */;
-  products?: PagedProducts | null /** Get a paginated list of products */;
+  productList?: PagedProducts | null /** Get a paginated list of products */;
 }
 
 export interface Category {
@@ -24,6 +24,7 @@ export interface Product {
   description: string;
   featured: boolean;
   id: string;
+  images: ProductImage[];
   listed: boolean;
   name: string;
   price: number;
@@ -31,11 +32,17 @@ export interface Product {
   sku: string;
   slug: string;
   stockQty?: number | null;
+  thumbnail?: ProductImage | null;
+}
+
+export interface ProductImage {
+  id: string;
+  url: string;
 }
 
 export interface PagedProducts {
-  items: Product[];
   pagination: Pagination;
+  products: Product[];
 }
 /** Pagination information for a paged query */
 export interface Pagination {
@@ -47,6 +54,7 @@ export interface Pagination {
 
 export interface RootMutationType {
   createProduct?: CreateProductResponse | null;
+  updateProduct?: UpdateProductResponse | null /** Update an existing product */;
 }
 
 export interface CreateProductResponse {
@@ -58,6 +66,11 @@ export interface Error {
   key: string;
   reason: string;
 }
+
+export interface UpdateProductResponse {
+  errors?: (Error | null)[] | null;
+  product?: Product | null;
+}
 export interface CategoryRootQueryTypeArgs {
   id?: string | null;
   slug?: string | null;
@@ -66,7 +79,7 @@ export interface ProductRootQueryTypeArgs {
   id?: string | null;
   slug?: string | null;
 }
-export interface ProductsRootQueryTypeArgs {
+export interface ProductListRootQueryTypeArgs {
   page?: number | null;
 }
 export interface CreateProductRootMutationTypeArgs {
@@ -78,5 +91,17 @@ export interface CreateProductRootMutationTypeArgs {
   salePrice?: number | null;
   sku: string;
   slug: string;
+  stockQty?: number | null;
+}
+export interface UpdateProductRootMutationTypeArgs {
+  description?: string | null;
+  featured?: boolean | null;
+  id: string;
+  listed?: boolean | null;
+  name?: string | null;
+  price?: number | null;
+  salePrice?: number | null;
+  sku?: string | null;
+  slug?: string | null;
   stockQty?: number | null;
 }
