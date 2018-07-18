@@ -1,13 +1,7 @@
-import { combineReducers } from 'redux';
-import cart, { CartState, CartAction } from './cartReducer';
+import { combineReducers, AnyAction } from 'redux';
 
-export type StoreAction = CartAction;
-export interface State {
-  cart: CartState;
-}
+export interface State {}
 
-const reducer = combineReducers<State, StoreAction>({
-  cart,
-});
+const reducer = combineReducers<State, AnyAction>({});
 
 export default reducer;

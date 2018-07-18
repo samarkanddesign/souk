@@ -1,51 +1,16 @@
 import * as React from 'react';
 import { RouteComponentProps, Redirect } from 'react-router-dom';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
-import { Product } from '../../types/gql';
 import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
 import LoadingSpinner from '../components/LoadingSpinner';
 import NotFound from '../components/NotFound';
-import { connect } from 'react-redux';
+import { basketId } from '../store/basketId';
+import { AddToBasketMutation, AddProductToBasket } from '../graphql/mutations';
+import { SingleProductQuery, SingleProduct } from '../graphql/queries';
 
-import { StoreAction } from '../store/reducers';
-import { Dispatch } from 'redux';
-import { AddProductToCart } from '../store/reducers/cartReducer';
+type Props = RouteComponentProps<{ slug: string }>;
 
-interface StateMappedToProps {}
-
-interface DispatchMappedToProps {
-  addToCart: (id: string) => void;
-}
-type Props = RouteComponentProps<{ slug: string }> &
-  StateMappedToProps &
-  DispatchMappedToProps;
-
-const SingleProduct = gql`
-  query SingleProduct($slug: String) {
-    product(slug: $slug) {
-      id
-      name
-      slug
-      description
-      price
-      salePrice
-      stockQty
-      images {
-        id
-        url
-      }
-    }
-  }
-`;
-
-class SingleProductQuery extends Query<
-  { product?: Product },
-  { slug: string }
-> {}
-
-const ProductPage = ({ match, addToCart }: Props) => {
+const ProductPage = ({ match }: Props) => {
   return (
     <SingleProductQuery
       query={SingleProduct}
@@ -55,26 +20,31 @@ const ProductPage = ({ match, addToCart }: Props) => {
         if (loading) {
           return <LoadingSpinner />;
         }
-        return (
-          <>
-            {Option(data)
-              .flatMap(d => Option(d.product))
-              .map(product => (
-                <ProductDetail product={product} addToCart={addToCart} />
-              ))
-              .getOrElse(<NotFound />)}
-          </>
-        );
+        return Option(data)
+          .flatMap(d => Option(d.product))
+          .map(product => (
+            <AddToBasketMutation mutation={AddProductToBasket}>
+              {addToBasket => {
+                return (
+                  <ProductDetail
+                    product={product}
+                    addToCart={() =>
+                      addToBasket({
+                        variables: {
+                          productId: parseInt(product.id, 10),
+                          basketId: basketId,
+                        },
+                      })
+                    }
+                  />
+                );
+              }}
+            </AddToBasketMutation>
+          ))
+          .getOrElse(<NotFound />);
       }}
     </SingleProductQuery>
   );
 };
 
-export default connect<StateMappedToProps, DispatchMappedToProps>(
-  () => ({}),
-  (dispatch: Dispatch<StoreAction>) => {
-    return {
-      addToCart: (id: string) => dispatch(AddProductToCart(id)),
-    };
-  },
-)(ProductPage);
+export default ProductPage;

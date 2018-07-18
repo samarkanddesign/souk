@@ -1,8 +1,12 @@
-import { createStore } from 'redux';
+import { createStore, AnyAction } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import reducer from './reducers';
+import reducer, { State } from './reducers';
 
-const store = createStore(reducer, composeWithDevTools());
+const store = createStore<State, AnyAction, {}, {}>(
+  reducer,
+  {} as State,
+  composeWithDevTools(),
+);
 
 export default store;

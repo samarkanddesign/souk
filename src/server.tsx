@@ -19,6 +19,16 @@ export const serverClient = new ApolloClient({
   link,
   cache: new InMemoryCache(),
   ssrMode: true,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+  },
 });
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST as string);

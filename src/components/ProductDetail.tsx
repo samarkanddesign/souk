@@ -5,7 +5,7 @@ import Price from './Price';
 
 interface Props {
   product: Product;
-  addToCart: (id: string) => void;
+  addToCart: () => void;
 }
 
 export const ProductDetail = ({ product, addToCart }: Props) => {
@@ -30,7 +30,7 @@ export const ProductDetail = ({ product, addToCart }: Props) => {
         .get()}
       <div>{product.description}</div>
 
-      <button onClick={() => addToCart(product.id)}>Add To Cart</button>
+      <button onClick={addToCart}>Add To Cart</button>
     </>
   );
 };

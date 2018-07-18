@@ -7,7 +7,7 @@
     "build": "razzle build",
     "test": "jest --env=jsdom",
     "start:prod": "NODE_ENV=production node build/server.js",
-    "types": "gql-gen --schema http://localhost:4000/graphql  --template graphql-codegen-typescript-template --out ./types/gql.ts"
+    "types": "CODEGEN_AVOID_OPTIONALS=true CODEGEN_ENUMS_AS_TYPES=true gql-gen --schema http://localhost:4000/graphql  --template graphql-codegen-typescript-template --out ./types/gql.ts"
   },
   "dependencies": {
     "@types/ramda": "^0.25.34",
@@ -40,10 +40,9 @@
     "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^6.0.4",
     "@types/react-router-dom": "^4.2.7",
-    "@types/redux": "^3.6.0",
     "@types/webpack-env": "^1.13.6",
-    "graphql-code-generator": "^0.9.3",
-    "graphql-codegen-typescript-template": "^0.9.3",
+    "graphql-code-generator": "^0.10.3",
+    "graphql-codegen-typescript-template": "^0.10.3",
     "jest": "^23.1.0",
     "ts-jest": "^22.4.6",
     "tslint": "^5.10.0",
