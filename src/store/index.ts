@@ -1,15 +1,17 @@
 import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-// import throttle = require('lodash/throttle');
+import throttle from 'lodash/throttle';
 
 import reducer, { State, Action } from './reducers';
+const isServer = typeof window !== 'undefined';
 
 const store = createStore<State, Action, {}, {}>(
   reducer,
-  {} as State,
+  (window as any).__SAVED_STATE__ as State,
   composeWithDevTools(),
 );
 
 export default store;
 
-// store.subscribe(() => {});
+if (!isServer) {
+}

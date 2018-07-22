@@ -2,16 +2,23 @@ import * as React from 'react';
 import { CreateBasketMutation, CreateBasket } from '../graphql/mutations';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Action } from '../store/reducers';
+import { Action, State } from '../store/reducers';
 import { SetBasketId } from '../store/reducers/basket';
 
 interface DispatchMappedToProps {
   setBasketId: (basketId: string) => void;
 }
 
-interface Props extends DispatchMappedToProps {}
+interface StateMappedToProps {
+  basketId: string | undefined;
+}
 
-export const BasketInitializer = ({ setBasketId }: Props) => {
+type Props = DispatchMappedToProps & StateMappedToProps;
+
+export const BasketInitializer = ({ basketId, setBasketId }: Props) => {
+  if (basketId) {
+    return null;
+  }
   return (
     <CreateBasketMutation
       mutation={CreateBasket}
@@ -43,6 +50,6 @@ const mapDispatchToProps = (
 };
 
 export default connect(
-  () => ({}),
+  (state: State): StateMappedToProps => ({ basketId: state.basket.basketId }),
   mapDispatchToProps,
 )(BasketInitializer);

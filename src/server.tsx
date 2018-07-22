@@ -8,10 +8,11 @@ import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { ApolloClient } from 'apollo-client';
+import cookieParser from 'cookie-parser';
 import { HttpLink } from 'apollo-link-http';
 import { Provider as ReduxProvider } from 'react-redux';
-
-import store from './store';
+import reducer, { State, Action } from './store/reducers';
+import { createStore } from '../node_modules/redux';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql', fetch });
 
@@ -43,9 +44,14 @@ const server = express();
 server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR as string))
+  .use(cookieParser())
   .use(errorHandler)
   .get('/*', async (req, res) => {
     const context: any = {};
+    const basketId: string | undefined = req.cookies.basketId;
+    const initialState = basketId ? { basket: { basketId } } : {};
+    const store = createStore<State, Action, {}, {}>(reducer);
+
     const WrappedApp = (
       <ApolloProvider client={serverClient}>
         <ReduxProvider store={store}>
@@ -80,7 +86,7 @@ server
           serverClient.extract(),
         ).replace(/</g, '\\u003c')};
 
-        window.__SAVED_STATE__ = localStorage.getItem('state') || {};
+        window.__SAVED_STATE__ = ${JSON.stringify(initialState)};
         </script>
 
         ${

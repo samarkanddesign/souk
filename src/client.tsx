@@ -7,8 +7,11 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-boost';
+import { createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import throttle from 'lodash/throttle';
 
-import store from './store';
+import reducer, { State, Action } from './store/reducers';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 
@@ -17,6 +20,12 @@ export const clientClient = new ApolloClient({
   cache: new InMemoryCache().restore((window as any).__APOLLO_STATE__),
   ssrForceFetchDelay: 100,
 });
+
+const store = createStore<State, Action, {}, {}>(
+  reducer,
+  (window as any).__SAVED_STATE__ as State,
+  composeWithDevTools(),
+);
 
 hydrate(
   <ApolloProvider client={clientClient}>
@@ -28,6 +37,17 @@ hydrate(
   </ApolloProvider>,
   document.getElementById('root'),
 );
+
+import('js-cookie').then(cookies => {
+  store.subscribe(
+    throttle(() => {
+      const basketId = store.getState().basket.basketId;
+      if (basketId) {
+        cookies.set('basketId', basketId, { expires: 1 });
+      }
+    }, 1000),
+  );
+});
 
 if (module.hot) {
   module.hot.accept();
