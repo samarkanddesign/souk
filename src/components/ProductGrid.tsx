@@ -3,10 +3,9 @@ import styled from 'react-emotion';
 
 import { ProductTile } from './ProductTile';
 import { Product } from '../../types/gql';
+import { ResetList } from './Styled';
 
-const ProductGridContainer = styled('ul')`
-  margin: 0;
-  padding: 0;
+const ProductGridContainer = styled(ResetList)`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 1rem;

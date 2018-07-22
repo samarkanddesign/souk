@@ -5,6 +5,8 @@ import { RemoveItemMutation, RemoveProduct } from '../graphql/mutations';
 import { connect } from 'react-redux';
 import { State } from '../store/reducers';
 import BasketInitializer from './BasketInitializer';
+import { ResetList } from './Styled';
+import { TextButton } from './Button';
 
 interface StateMappedToProps {
   basketId?: string;
@@ -12,7 +14,7 @@ interface StateMappedToProps {
 
 type Props = StateMappedToProps;
 
-export const Cart = ({ basketId }: Props) => {
+export const Basket = ({ basketId }: Props) => {
   if (!basketId) {
     return <BasketInitializer />;
   }
@@ -28,7 +30,7 @@ export const Cart = ({ basketId }: Props) => {
           }
 
           return (
-            <ul>
+            <ResetList>
               {data.basket.items.map(item => (
                 <RemoveItemMutation
                   key={item.id}
@@ -38,15 +40,15 @@ export const Cart = ({ basketId }: Props) => {
                     itemId: parseInt(item.id, 10),
                   }}
                 >
-                  {removeItem => (
+                  {(removeItem: () => void) => (
                     <li>
                       {item.product.name} x {item.quantity}{' '}
-                      <button onClick={() => removeItem()}>🗑</button>
+                      <TextButton onClick={removeItem}>🗑</TextButton>
                     </li>
                   )}
                 </RemoveItemMutation>
               ))}
-            </ul>
+            </ResetList>
           );
         }}
       </BasketQuery>
@@ -58,4 +60,4 @@ const MapStateToProps = (state: State): StateMappedToProps => ({
   basketId: state.basket.basketId,
 });
 
-export default connect(MapStateToProps)(Cart);
+export default connect(MapStateToProps)(Basket);

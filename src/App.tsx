@@ -8,7 +8,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
 import ProductPage from './pages/ProductPage';
-import Cart from './components/Cart';
+import Basket from './components/Basket';
 
 injectGlobal`
   body {
@@ -27,7 +27,7 @@ const Wrapper = styled('div')`
 
 const App = () => (
   <Wrapper>
-    <Cart />
+    <Basket />
 
     <Navbar />
     <main>

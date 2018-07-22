@@ -3,7 +3,7 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import express, { ErrorRequestHandler } from 'express';
 import { renderToString } from 'react-dom/server';
-import { renderStylesToString } from 'emotion-server';
+import { renderStylesToString, extractCritical } from 'emotion-server';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
@@ -12,7 +12,7 @@ import cookieParser from 'cookie-parser';
 import { HttpLink } from 'apollo-link-http';
 import { Provider as ReduxProvider } from 'react-redux';
 import reducer, { State, Action } from './store/reducers';
-import { createStore } from '../node_modules/redux';
+import { createStore } from 'redux';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql', fetch });
 
@@ -64,7 +64,7 @@ server
 
     await getDataFromTree(WrappedApp).catch(console.log);
 
-    const markup = renderStylesToString(renderToString(WrappedApp));
+    const { html, ids, css } = extractCritical(renderToString(WrappedApp));
 
     if (context.url) {
       res.redirect(context.url);
@@ -81,12 +81,16 @@ server
             ? `<link rel="stylesheet" href="${assets.client.css}">`
             : ''
         }
+        <style type="text/css">
+        ${css}
+        </style>
         <script>
         window.__APOLLO_STATE__=${JSON.stringify(
           serverClient.extract(),
         ).replace(/</g, '\\u003c')};
 
         window.__SAVED_STATE__ = ${JSON.stringify(initialState)};
+        window.__EMOTION_IDS__ = ${JSON.stringify(ids)}
         </script>
 
         ${
@@ -96,7 +100,7 @@ server
         }
     </head>
     <body>
-        <div id="root">${markup}</div>
+        <div id="root">${html}</div>
     </body>
 </html>`);
     }

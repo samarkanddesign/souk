@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Product } from '../../types/gql';
 import { Option } from 'catling';
 import Price from './Price';
+import { Button } from './Button';
 
 interface Props {
   product: Product;
@@ -30,7 +31,7 @@ export const ProductDetail = ({ product, addToCart }: Props) => {
         .get()}
       <div>{product.description}</div>
 
-      <button onClick={addToCart}>Add To Cart</button>
+      <Button onClick={addToCart}>Add To Cart</Button>
     </>
   );
 };

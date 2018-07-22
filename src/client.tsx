@@ -8,6 +8,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-boost';
 import { createStore } from 'redux';
+import { hydrate as hydrateStyles } from 'emotion';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import throttle from 'lodash/throttle';
 
@@ -37,6 +38,8 @@ hydrate(
   </ApolloProvider>,
   document.getElementById('root'),
 );
+
+hydrateStyles((window as any).__EMOTION_IDS__);
 
 import('js-cookie').then(cookies => {
   store.subscribe(
