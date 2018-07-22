@@ -1,7 +1,7 @@
 import App from './App';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom';
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import { renderToString } from 'react-dom/server';
 import { renderStylesToString } from 'emotion-server';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
@@ -33,10 +33,17 @@ export const serverClient = new ApolloClient({
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST as string);
 
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  console.log(err);
+
+  res.status(500).send(`Failure! ${JSON.stringify(err, null, ' ')}`);
+};
+
 const server = express();
 server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR as string))
+  .use(errorHandler)
   .get('/*', async (req, res) => {
     const context: any = {};
     const WrappedApp = (
@@ -49,7 +56,7 @@ server
       </ApolloProvider>
     );
 
-    await getDataFromTree(WrappedApp);
+    await getDataFromTree(WrappedApp).catch(console.log);
 
     const markup = renderStylesToString(renderToString(WrappedApp));
 
@@ -72,6 +79,8 @@ server
         window.__APOLLO_STATE__=${JSON.stringify(
           serverClient.extract(),
         ).replace(/</g, '\\u003c')};
+
+        window.__SAVED_STATE__ = localStorage.getItem('state') || {};
         </script>
 
         ${

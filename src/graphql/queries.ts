@@ -4,7 +4,7 @@ import { BasketRootQueryTypeArgs, Basket, Product } from '../../types/gql';
 import { Query } from 'react-apollo';
 
 export const GetBasket = gql`
-  query GetBasket($basketId: String!) {
+  query GetBasket($basketId: UUID!) {
     basket(basketId: $basketId) {
       ...BasketFragment
     }

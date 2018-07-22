@@ -1,13 +1,24 @@
 import * as React from 'react';
 
-import { basketId } from '../store/basketId';
 import { GetBasket, BasketQuery } from '../graphql/queries';
 import { RemoveItemMutation, RemoveProduct } from '../graphql/mutations';
+import { connect } from 'react-redux';
+import { State } from '../store/reducers';
+import BasketInitializer from './BasketInitializer';
 
-export const Cart = () => {
+interface StateMappedToProps {
+  basketId?: string;
+}
+
+type Props = StateMappedToProps;
+
+export const Cart = ({ basketId }: Props) => {
+  if (!basketId) {
+    return <BasketInitializer />;
+  }
   return (
     <div>
-      <BasketQuery query={GetBasket} variables={{ basketId: basketId }}>
+      <BasketQuery query={GetBasket} variables={{ basketId }}>
         {({ data, loading }) => {
           if (loading) {
             return 'loading...';
@@ -43,4 +54,8 @@ export const Cart = () => {
   );
 };
 
-export default Cart;
+const MapStateToProps = (state: State): StateMappedToProps => ({
+  basketId: state.basket.basketId,
+});
+
+export default connect(MapStateToProps)(Cart);

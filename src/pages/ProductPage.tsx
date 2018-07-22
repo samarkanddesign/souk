@@ -4,13 +4,23 @@ import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
 import LoadingSpinner from '../components/LoadingSpinner';
 import NotFound from '../components/NotFound';
-import { basketId } from '../store/basketId';
-import { AddToBasketMutation, AddProductToBasket } from '../graphql/mutations';
+import {
+  AddToBasketMutation,
+  AddProductToBasket,
+  CreateBasketMutation,
+  CreateBasket,
+} from '../graphql/mutations';
 import { SingleProductQuery, SingleProduct } from '../graphql/queries';
+import { State } from '../store/reducers';
+import { connect } from 'react-redux';
 
-type Props = RouteComponentProps<{ slug: string }>;
+interface StateMappedToProps {
+  basketId?: string;
+}
 
-const ProductPage = ({ match }: Props) => {
+type Props = RouteComponentProps<{ slug: string }> & StateMappedToProps;
+
+const ProductPage = ({ match, basketId }: Props) => {
   return (
     <SingleProductQuery
       query={SingleProduct}
@@ -23,20 +33,23 @@ const ProductPage = ({ match }: Props) => {
         return Option(data)
           .flatMap(d => Option(d.product))
           .map(product => (
-            <AddToBasketMutation mutation={AddProductToBasket}>
+            <AddToBasketMutation
+              mutation={AddProductToBasket}
+              onError={e => alert(e.message)}
+            >
               {addToBasket => {
-                return (
-                  <ProductDetail
-                    product={product}
-                    addToCart={() =>
+                const addToCart = basketId
+                  ? () =>
                       addToBasket({
                         variables: {
                           productId: parseInt(product.id, 10),
-                          basketId: basketId,
+                          basketId,
                         },
                       })
-                    }
-                  />
+                  : () => {};
+
+                return (
+                  <ProductDetail product={product} addToCart={addToCart} />
                 );
               }}
             </AddToBasketMutation>
@@ -47,4 +60,8 @@ const ProductPage = ({ match }: Props) => {
   );
 };
 
-export default ProductPage;
+const MapStateToProps = (state: State): StateMappedToProps => ({
+  basketId: state.basket.basketId,
+});
+
+export default connect(MapStateToProps)(ProductPage);

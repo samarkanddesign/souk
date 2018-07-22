@@ -1,7 +1,11 @@
-import { combineReducers, AnyAction } from 'redux';
+import { combineReducers } from 'redux';
+import { basketReducer, BasketAction, BasketState } from './basket';
 
-export interface State {}
+export type Action = BasketAction;
+export interface State {
+  basket: BasketState;
+}
 
-const reducer = combineReducers<State, AnyAction>({});
+const reducer = combineReducers<State, Action>({ basket: basketReducer });
 
 export default reducer;

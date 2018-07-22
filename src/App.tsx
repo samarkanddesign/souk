@@ -9,6 +9,7 @@ import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
 import ProductPage from './pages/ProductPage';
 import Cart from './components/Cart';
+import BasketInitializer from './components/BasketInitializer';
 
 injectGlobal`
   body {
@@ -27,9 +28,8 @@ const Wrapper = styled('div')`
 
 const App = () => (
   <Wrapper>
-    <pre>
-      <Cart />
-    </pre>
+    <Cart />
+
     <Navbar />
     <main>
       <Switch>

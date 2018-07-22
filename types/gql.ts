@@ -8,6 +8,9 @@ type Resolver<Result, Args = any> = (
   info: GraphQLResolveInfo,
 ) => Promise<Result> | Result;
 
+/** The UUID scalar type represents a version 4 (random) UUID. Any binary not conforming to this format will be flagged. */
+export type UUID = any;
+
 /** The `Naive DateTime` scalar type represents a naive date and time withouttimezone. The DateTime appears in a JSON response as an ISO8601 formattedstring. */
 export type NaiveDateTime = any;
 
@@ -21,8 +24,8 @@ export interface RootQueryType {
 }
 
 export interface Basket {
-  basketId: string;
   createdAt: NaiveDateTime;
+  id: UUID;
   items: BasketItem[];
   updatedAt: NaiveDateTime;
 }
@@ -77,8 +80,9 @@ export interface Pagination {
 
 export interface RootMutationType {
   addProductToBasket: Basket | null /** Add a product to the basket using an existing or new basket identifier */;
+  createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
-  removeProductFromBasket: Basket | null;
+  removeProductFromBasket: Basket | null /** Remove a product from a basket */;
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
 }
 
@@ -97,7 +101,7 @@ export interface UpdateProductResponse {
   product: Product | null;
 }
 export interface BasketRootQueryTypeArgs {
-  basketId: string;
+  basketId: UUID;
 }
 export interface CartProductsRootQueryTypeArgs {
   ids: string[];
@@ -114,8 +118,7 @@ export interface ProductListRootQueryTypeArgs {
   page: number | null;
 }
 export interface AddProductToBasketRootMutationTypeArgs {
-  basketId: string;
-  id: string;
+  basketId: UUID | null;
   productId: number;
   quantity: number;
 }
@@ -131,7 +134,7 @@ export interface CreateProductRootMutationTypeArgs {
   stockQty: number | null;
 }
 export interface RemoveProductFromBasketRootMutationTypeArgs {
-  basketId: string;
+  basketId: UUID;
   itemId: number;
 }
 export interface UpdateProductRootMutationTypeArgs {
@@ -159,7 +162,7 @@ export namespace RootQueryTypeResolvers {
 
   export type BasketResolver = Resolver<Basket | null, BasketArgs>;
   export interface BasketArgs {
-    basketId: string;
+    basketId: UUID;
   }
 
   export type CartProductsResolver = Resolver<Product[], CartProductsArgs>;
@@ -190,14 +193,14 @@ export namespace RootQueryTypeResolvers {
 }
 export namespace BasketResolvers {
   export interface Resolvers {
-    basketId?: BasketIdResolver;
     createdAt?: CreatedAtResolver;
+    id?: IdResolver;
     items?: ItemsResolver;
     updatedAt?: UpdatedAtResolver;
   }
 
-  export type BasketIdResolver = Resolver<string>;
   export type CreatedAtResolver = Resolver<NaiveDateTime>;
+  export type IdResolver = Resolver<UUID>;
   export type ItemsResolver = Resolver<BasketItem[]>;
   export type UpdatedAtResolver = Resolver<NaiveDateTime>;
 }
@@ -294,8 +297,9 @@ export namespace PaginationResolvers {
 export namespace RootMutationTypeResolvers {
   export interface Resolvers {
     addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing or new basket identifier */;
+    createBasket?: CreateBasketResolver /** Create a new basket with a unique ID */;
     createProduct?: CreateProductResolver;
-    removeProductFromBasket?: RemoveProductFromBasketResolver;
+    removeProductFromBasket?: RemoveProductFromBasketResolver /** Remove a product from a basket */;
     updateProduct?: UpdateProductResolver /** Update an existing product */;
   }
 
@@ -304,12 +308,12 @@ export namespace RootMutationTypeResolvers {
     AddProductToBasketArgs
   >;
   export interface AddProductToBasketArgs {
-    basketId: string;
-    id: string;
+    basketId: UUID | null;
     productId: number;
     quantity: number;
   }
 
+  export type CreateBasketResolver = Resolver<Basket>;
   export type CreateProductResolver = Resolver<
     CreateProductResponse | null,
     CreateProductArgs
@@ -331,7 +335,7 @@ export namespace RootMutationTypeResolvers {
     RemoveProductFromBasketArgs
   >;
   export interface RemoveProductFromBasketArgs {
-    basketId: string;
+    basketId: UUID;
     itemId: number;
   }
 

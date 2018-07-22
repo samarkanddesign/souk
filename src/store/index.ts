@@ -1,12 +1,15 @@
-import { createStore, AnyAction } from 'redux';
+import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+// import throttle = require('lodash/throttle');
 
-import reducer, { State } from './reducers';
+import reducer, { State, Action } from './reducers';
 
-const store = createStore<State, AnyAction, {}, {}>(
+const store = createStore<State, Action, {}, {}>(
   reducer,
   {} as State,
   composeWithDevTools(),
 );
 
 export default store;
+
+// store.subscribe(() => {});
