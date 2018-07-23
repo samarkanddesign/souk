@@ -9,13 +9,17 @@ import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
 import ProductPage from './pages/ProductPage';
 import Basket from './components/Basket';
+import BasketToggle from './components/BasketToggle';
 
 injectGlobal`
-  body {
+  body,html {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
     box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
   }
 `;
 
@@ -27,9 +31,9 @@ const Wrapper = styled('div')`
 
 const App = () => (
   <Wrapper>
-    <Basket />
-
-    <Navbar />
+    <header>
+      <Navbar />
+    </header>
     <main>
       <Switch>
         <Route exact path="/" component={Home} />

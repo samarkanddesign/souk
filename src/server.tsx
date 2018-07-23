@@ -3,7 +3,7 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import express, { ErrorRequestHandler } from 'express';
 import { renderToString } from 'react-dom/server';
-import { renderStylesToString, extractCritical } from 'emotion-server';
+import { extractCritical } from 'emotion-server';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
@@ -49,7 +49,9 @@ server
   .get('/*', async (req, res) => {
     const context: any = {};
     const basketId: string | undefined = req.cookies.basketId;
-    const initialState = basketId ? { basket: { basketId } } : {};
+    const initialState = basketId
+      ? { basket: { basketId, showing: false } }
+      : {};
     const store = createStore<State, Action, {}, {}>(reducer);
 
     const WrappedApp = (

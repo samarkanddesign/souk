@@ -1,26 +1,29 @@
 import * as React from 'react';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
 import LoadingSpinner from '../components/LoadingSpinner';
 import NotFound from '../components/NotFound';
-import {
-  AddToBasketMutation,
-  AddProductToBasket,
-  CreateBasketMutation,
-  CreateBasket,
-} from '../graphql/mutations';
+import { AddToBasketMutation, AddProductToBasket } from '../graphql/mutations';
 import { SingleProductQuery, SingleProduct } from '../graphql/queries';
-import { State } from '../store/reducers';
+import { State, Action } from '../store/reducers';
 import { connect } from 'react-redux';
+import { SetBasketVisibility } from '../store/reducers/basket';
+import { Dispatch } from 'redux';
 
 interface StateMappedToProps {
   basketId?: string;
 }
 
-type Props = RouteComponentProps<{ slug: string }> & StateMappedToProps;
+interface DispatchMappedToProps {
+  showBasket: () => void;
+}
 
-const ProductPage = ({ match, basketId }: Props) => {
+type Props = RouteComponentProps<{ slug: string }> &
+  StateMappedToProps &
+  DispatchMappedToProps;
+
+const ProductPage = ({ match, basketId, showBasket }: Props) => {
   return (
     <SingleProductQuery
       query={SingleProduct}
@@ -36,6 +39,7 @@ const ProductPage = ({ match, basketId }: Props) => {
             <AddToBasketMutation
               mutation={AddProductToBasket}
               onError={e => alert(e.message)}
+              onCompleted={showBasket}
             >
               {addToBasket => {
                 const addToCart = basketId
@@ -60,8 +64,17 @@ const ProductPage = ({ match, basketId }: Props) => {
   );
 };
 
-const MapStateToProps = (state: State): StateMappedToProps => ({
+const mapStateToProps = (state: State): StateMappedToProps => ({
   basketId: state.basket.basketId,
 });
 
-export default connect(MapStateToProps)(ProductPage);
+const mapDispatchToProps = (
+  dispatch: Dispatch<Action>,
+): DispatchMappedToProps => ({
+  showBasket: () => dispatch(SetBasketVisibility(true)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ProductPage);

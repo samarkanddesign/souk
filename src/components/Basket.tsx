@@ -1,63 +1,125 @@
 import * as React from 'react';
 
 import { GetBasket, BasketQuery } from '../graphql/queries';
-import { RemoveItemMutation, RemoveProduct } from '../graphql/mutations';
 import { connect } from 'react-redux';
-import { State } from '../store/reducers';
+import { State, Action } from '../store/reducers';
 import BasketInitializer from './BasketInitializer';
-import { ResetList } from './Styled';
-import { TextButton } from './Button';
+import { TextButton, ButtonLink } from './Button';
+import styled from 'react-emotion';
+import { Dispatch } from 'redux';
+import { SetBasketVisibility } from '../store/reducers/basket';
+import { BasketToggle } from './BasketToggle';
+import { BasketContent } from './BasketContent';
+
+const basketWidth = '30rem';
+const BasketContainer = styled('div')<{ visible: boolean }>(
+  {
+    background: '#fff',
+    height: '100vh',
+    position: 'fixed',
+    width: basketWidth,
+    maxWidth: '100%',
+    top: 0,
+    padding: '2rem',
+    transition: 'right .4s ease',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  props => ({
+    right: props.visible ? 0 : `-${basketWidth}`,
+  }),
+);
+
+const BasketUnderlay = styled('div')<{ visible: boolean }>(
+  {
+    background: '#333',
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    // transition: 'opacity: .4s ease',
+  },
+  props => ({
+    display: props.visible ? 'normal' : 'none',
+    opacity: props.visible ? 0.5 : 0,
+  }),
+);
+
+const BasketCtaContainer = styled('aside')({
+  alignSelf: 'flex-end',
+  display: 'block',
+  width: '100%',
+});
 
 interface StateMappedToProps {
   basketId?: string;
+  basketVisible: boolean;
+}
+interface DispatchMappedToProps {
+  closeBasket: () => void;
+  openBasket: () => void;
 }
 
-type Props = StateMappedToProps;
+type Props = StateMappedToProps & DispatchMappedToProps;
 
-export const Basket = ({ basketId }: Props) => {
+const BasketHeader = styled('header')({
+  display: 'flex',
+  justifyContent: 'space-between',
+});
+
+export const Basket = ({
+  basketId,
+  basketVisible,
+  closeBasket,
+  openBasket,
+}: Props) => {
   if (!basketId) {
     return <BasketInitializer />;
   }
   return (
-    <div>
-      <BasketQuery query={GetBasket} variables={{ basketId }}>
-        {({ data, loading }) => {
-          if (loading) {
-            return 'loading...';
-          }
-          if (!data || !data.basket || data.basket.items.length === 0) {
-            return <span>Basket empty</span>;
-          }
-
-          return (
-            <ResetList>
-              {data.basket.items.map(item => (
-                <RemoveItemMutation
-                  key={item.id}
-                  mutation={RemoveProduct}
-                  variables={{
-                    basketId: basketId,
-                    itemId: parseInt(item.id, 10),
-                  }}
-                >
-                  {(removeItem: () => void) => (
-                    <li>
-                      {item.product.name} x {item.quantity}{' '}
-                      <TextButton onClick={removeItem}>🗑</TextButton>
-                    </li>
-                  )}
-                </RemoveItemMutation>
-              ))}
-            </ResetList>
-          );
-        }}
-      </BasketQuery>
-    </div>
+    <BasketQuery query={GetBasket} variables={{ basketId }}>
+      {({ data, loading }) => {
+        const items = (data && data.basket && data.basket.items) || [];
+        return (
+          <>
+            <BasketToggle toggleBasket={openBasket} itemCount={items.length} />
+            <BasketUnderlay onClick={closeBasket} visible={basketVisible} />
+            <BasketContainer visible={basketVisible}>
+              <BasketHeader>
+                <h2>Basket</h2>
+                <TextButton onClick={closeBasket}>✖️</TextButton>
+              </BasketHeader>
+              <BasketContent
+                loading={loading}
+                basketId={basketId}
+                items={items}
+              />
+              <BasketCtaContainer>
+                <ButtonLink to="/basket" isFullWidth={true}>
+                  Go to basket
+                </ButtonLink>
+              </BasketCtaContainer>
+            </BasketContainer>
+          </>
+        );
+      }}
+    </BasketQuery>
   );
 };
 
 const MapStateToProps = (state: State): StateMappedToProps => ({
   basketId: state.basket.basketId,
+  basketVisible: state.basket.showing,
+});
+const mapDispatchToProps = (
+  dispatch: Dispatch<Action>,
+): DispatchMappedToProps => ({
+  closeBasket: () => dispatch(SetBasketVisibility(false)),
+  openBasket: () => dispatch(SetBasketVisibility(true)),
 });
 
-export default connect(MapStateToProps)(Basket);
+export default connect(
+  MapStateToProps,
+  mapDispatchToProps,
+)(Basket);

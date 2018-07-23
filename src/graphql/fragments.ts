@@ -8,6 +8,12 @@ export const BasketFragment = gql`
       quantity
       product {
         name
+        slug
+        price
+        salePrice
+        thumbnail {
+          url
+        }
       }
     }
   }

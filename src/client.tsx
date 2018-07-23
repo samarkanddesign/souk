@@ -1,5 +1,5 @@
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
@@ -11,8 +11,10 @@ import { createStore } from 'redux';
 import { hydrate as hydrateStyles } from 'emotion';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import throttle from 'lodash/throttle';
+import { createBrowserHistory } from 'history';
 
 import reducer, { State, Action } from './store/reducers';
+import { SetBasketVisibility } from './store/reducers/basket';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 
@@ -28,12 +30,14 @@ const store = createStore<State, Action, {}, {}>(
   composeWithDevTools(),
 );
 
+const history = createBrowserHistory();
+
 hydrate(
   <ApolloProvider client={clientClient}>
     <ReduxProvider store={store}>
-      <BrowserRouter>
+      <Router history={history}>
         <App />
-      </BrowserRouter>
+      </Router>
     </ReduxProvider>
   </ApolloProvider>,
   document.getElementById('root'),
@@ -50,6 +54,10 @@ import('js-cookie').then(cookies => {
       }
     }, 1000),
   );
+});
+
+history.listen(() => {
+  store.dispatch(SetBasketVisibility(false));
 });
 
 if (module.hot) {
