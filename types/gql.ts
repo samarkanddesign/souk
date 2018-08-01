@@ -16,7 +16,6 @@ export type NaiveDateTime = any;
 
 export interface RootQueryType {
   basket: Basket | null /** Get a basket by its identifier */;
-  cartProducts: Product[];
   categories: Category[] /** Get all categories */;
   category: Category | null /** Get a single category by id or slug */;
   product: Product | null /** Get a single product by id or slug */;
@@ -82,29 +81,44 @@ export interface RootMutationType {
   addProductToBasket: Basket | null /** Add a product to the basket using an existing or new basket identifier */;
   createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
+  login: Session | null /** Obtain a JWT */;
+  register: RegisterResponse | null /** Register a new user and login */;
   removeProductFromBasket: Basket | null /** Remove a product from a basket */;
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
 }
 
 export interface CreateProductResponse {
-  errors: (Error | null)[] | null;
-  product: Product | null;
+  entity: Product | null;
+  validation: (Validation | null)[] | null;
 }
 /** A validation error */
-export interface Error {
+export interface Validation {
   key: string;
   reason: string;
 }
 
+export interface Session {
+  jwt: string;
+  user: User;
+}
+
+export interface User {
+  email: string;
+  id: string;
+  name: string;
+}
+
+export interface RegisterResponse {
+  entity: Session | null;
+  validation: (Validation | null)[] | null;
+}
+
 export interface UpdateProductResponse {
-  errors: (Error | null)[] | null;
-  product: Product | null;
+  entity: Product | null;
+  validation: (Validation | null)[] | null;
 }
 export interface BasketRootQueryTypeArgs {
-  basketId: UUID;
-}
-export interface CartProductsRootQueryTypeArgs {
-  ids: string[];
+  basketId: UUID | null;
 }
 export interface CategoryRootQueryTypeArgs {
   id: string | null;
@@ -133,6 +147,15 @@ export interface CreateProductRootMutationTypeArgs {
   slug: string;
   stockQty: number | null;
 }
+export interface LoginRootMutationTypeArgs {
+  email: string;
+  password: string;
+}
+export interface RegisterRootMutationTypeArgs {
+  email: string;
+  name: string;
+  password: string;
+}
 export interface RemoveProductFromBasketRootMutationTypeArgs {
   basketId: UUID;
   itemId: number;
@@ -153,7 +176,6 @@ export interface UpdateProductRootMutationTypeArgs {
 export namespace RootQueryTypeResolvers {
   export interface Resolvers {
     basket?: BasketResolver /** Get a basket by its identifier */;
-    cartProducts?: CartProductsResolver;
     categories?: CategoriesResolver /** Get all categories */;
     category?: CategoryResolver /** Get a single category by id or slug */;
     product?: ProductResolver /** Get a single product by id or slug */;
@@ -162,12 +184,7 @@ export namespace RootQueryTypeResolvers {
 
   export type BasketResolver = Resolver<Basket | null, BasketArgs>;
   export interface BasketArgs {
-    basketId: UUID;
-  }
-
-  export type CartProductsResolver = Resolver<Product[], CartProductsArgs>;
-  export interface CartProductsArgs {
-    ids: string[];
+    basketId: UUID | null;
   }
 
   export type CategoriesResolver = Resolver<Category[]>;
@@ -299,6 +316,8 @@ export namespace RootMutationTypeResolvers {
     addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing or new basket identifier */;
     createBasket?: CreateBasketResolver /** Create a new basket with a unique ID */;
     createProduct?: CreateProductResolver;
+    login?: LoginResolver /** Obtain a JWT */;
+    register?: RegisterResolver /** Register a new user and login */;
     removeProductFromBasket?: RemoveProductFromBasketResolver /** Remove a product from a basket */;
     updateProduct?: UpdateProductResolver /** Update an existing product */;
   }
@@ -330,6 +349,22 @@ export namespace RootMutationTypeResolvers {
     stockQty: number | null;
   }
 
+  export type LoginResolver = Resolver<Session | null, LoginArgs>;
+  export interface LoginArgs {
+    email: string;
+    password: string;
+  }
+
+  export type RegisterResolver = Resolver<
+    RegisterResponse | null,
+    RegisterArgs
+  >;
+  export interface RegisterArgs {
+    email: string;
+    name: string;
+    password: string;
+  }
+
   export type RemoveProductFromBasketResolver = Resolver<
     Basket | null,
     RemoveProductFromBasketArgs
@@ -358,14 +393,14 @@ export namespace RootMutationTypeResolvers {
 }
 export namespace CreateProductResponseResolvers {
   export interface Resolvers {
-    errors?: ErrorsResolver;
-    product?: ProductResolver;
+    entity?: EntityResolver;
+    validation?: ValidationResolver;
   }
 
-  export type ErrorsResolver = Resolver<(Error | null)[] | null>;
-  export type ProductResolver = Resolver<Product | null>;
+  export type EntityResolver = Resolver<Product | null>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 } /** A validation error */
-export namespace ErrorResolvers {
+export namespace ValidationResolvers {
   export interface Resolvers {
     key?: KeyResolver;
     reason?: ReasonResolver;
@@ -374,12 +409,41 @@ export namespace ErrorResolvers {
   export type KeyResolver = Resolver<string>;
   export type ReasonResolver = Resolver<string>;
 }
-export namespace UpdateProductResponseResolvers {
+export namespace SessionResolvers {
   export interface Resolvers {
-    errors?: ErrorsResolver;
-    product?: ProductResolver;
+    jwt?: JwtResolver;
+    user?: UserResolver;
   }
 
-  export type ErrorsResolver = Resolver<(Error | null)[] | null>;
-  export type ProductResolver = Resolver<Product | null>;
+  export type JwtResolver = Resolver<string>;
+  export type UserResolver = Resolver<User>;
+}
+export namespace UserResolvers {
+  export interface Resolvers {
+    email?: EmailResolver;
+    id?: IdResolver;
+    name?: NameResolver;
+  }
+
+  export type EmailResolver = Resolver<string>;
+  export type IdResolver = Resolver<string>;
+  export type NameResolver = Resolver<string>;
+}
+export namespace RegisterResponseResolvers {
+  export interface Resolvers {
+    entity?: EntityResolver;
+    validation?: ValidationResolver;
+  }
+
+  export type EntityResolver = Resolver<Session | null>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
+}
+export namespace UpdateProductResponseResolvers {
+  export interface Resolvers {
+    entity?: EntityResolver;
+    validation?: ValidationResolver;
+  }
+
+  export type EntityResolver = Resolver<Product | null>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 }

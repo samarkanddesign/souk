@@ -3,35 +3,9 @@ import { RouteComponentProps } from 'react-router';
 import * as qs from 'qs';
 import { Option } from 'catling';
 import { Link } from 'react-router-dom';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 
 import { ProductGrid } from '../components/ProductGrid';
-import { PagedProducts, ProductListRootQueryTypeArgs } from '../../types/gql';
-
-class AllProductsQuery extends Query<
-  { productList?: PagedProducts },
-  ProductListRootQueryTypeArgs
-> {}
-
-const allProducts = gql`
-  query AllProducts($page: Int) {
-    productList(page: $page) {
-      products {
-        id
-        name
-        price
-        slug
-        thumbnail {
-          url
-        }
-      }
-      pagination {
-        totalPages
-      }
-    }
-  }
-`;
+import { AllProductsQuery, allProducts } from '../graphql/queries';
 
 type Props = RouteComponentProps<{}>;
 
