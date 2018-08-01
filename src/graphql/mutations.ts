@@ -4,6 +4,8 @@ import { Mutation } from 'react-apollo';
 import {
   RemoveProductFromBasketRootMutationTypeArgs,
   Basket,
+  Session,
+  LoginRootMutationTypeArgs,
 } from '../../types/gql';
 
 export const CreateBasket = gql`
@@ -50,4 +52,21 @@ export const AddProductToBasket = gql`
 export class AddToBasketMutation extends Mutation<
   Basket,
   { basketId: string; productId: number }
+> {}
+
+export const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      jwt
+      user {
+        email
+        name
+      }
+    }
+  }
+`;
+
+export class LoginMutation extends Mutation<
+  { login: Session },
+  LoginRootMutationTypeArgs
 > {}

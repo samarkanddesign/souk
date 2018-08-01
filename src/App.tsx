@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, RouteProps } from 'react-router-dom';
 import Home from './pages/HomePage';
 
 import ShopPage from './pages/ShopPage';
@@ -8,8 +8,11 @@ import NotFoundPage from './pages/NotFoundPage';
 import styled, { injectGlobal } from 'react-emotion';
 import { spacing } from './components/style';
 import ProductPage from './pages/ProductPage';
-import Basket from './components/Basket';
-import BasketToggle from './components/BasketToggle';
+
+import LoginPage from './pages/LoginPage';
+import EnsureAuth from './components/EnsureAuth';
+import CheckoutPage from './pages/CheckoutPage';
+import EnsureGuest from './components/EnsureGuest';
 
 injectGlobal`
   body,html {
@@ -39,10 +42,38 @@ const App = () => (
         <Route exact path="/" component={Home} />
         <Route exact path="/shop" component={ShopPage} />
         <Route exact path="/product/:slug" component={ProductPage} />
+        <GuestRoute exact path="/login" component={LoginPage} />
+        <AuthRoute exact path="/checkout" component={CheckoutPage} />
         <Route component={NotFoundPage} />
       </Switch>
     </main>
   </Wrapper>
 );
+
+const AuthRoute = ({ component: Component, ...rest }: RouteProps) => {
+  return (
+    <Route
+      {...rest}
+      render={matchProps => (
+        <EnsureAuth>
+          {Component ? <Component {...matchProps} /> : null}
+        </EnsureAuth>
+      )}
+    />
+  );
+};
+
+const GuestRoute = ({ component: Component, ...rest }: RouteProps) => {
+  return (
+    <Route
+      {...rest}
+      render={matchProps => (
+        <EnsureGuest>
+          {Component ? <Component {...matchProps} /> : null}
+        </EnsureGuest>
+      )}
+    />
+  );
+};
 
 export default App;

@@ -49,10 +49,12 @@ server
   .get('/*', async (req, res) => {
     const context: any = {};
     const basketId: string | undefined = req.cookies.basketId;
-    const initialState = basketId
-      ? { basket: { basketId, showing: false } }
+    const token: string | undefined = req.cookies.token;
+
+    const initialState: Partial<State> = basketId
+      ? { basket: { basketId, showing: false }, auth: { token } }
       : {};
-    const store = createStore<State, Action, {}, {}>(reducer);
+    const store = createStore<State, Action, {}, {}>(reducer, initialState);
 
     const WrappedApp = (
       <ApolloProvider client={serverClient}>

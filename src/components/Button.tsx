@@ -29,6 +29,7 @@ export const TextButton = styled('button')`
   background: transparent;
   cursor: pointer;
   border-style: none;
+  font-size: 100%;
 `;
 
 export const ButtonLink = Button.withComponent(Link);

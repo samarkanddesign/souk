@@ -48,9 +48,19 @@ hydrateStyles((window as any).__EMOTION_IDS__);
 import('js-cookie').then(cookies => {
   store.subscribe(
     throttle(() => {
-      const basketId = store.getState().basket.basketId;
+      const state = store.getState();
+      const basketId = state.basket.basketId;
+      const token = state.auth.token;
       if (basketId) {
         cookies.set('basketId', basketId, { expires: 1 });
+      } else {
+        cookies.remove('basketId');
+      }
+
+      if (token) {
+        cookies.set('token', token);
+      } else {
+        cookies.remove('token');
       }
     }, 1000),
   );

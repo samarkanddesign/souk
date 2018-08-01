@@ -78,7 +78,7 @@ export interface Pagination {
 }
 
 export interface RootMutationType {
-  addProductToBasket: Basket | null /** Add a product to the basket using an existing or new basket identifier */;
+  addProductToBasket: Basket | null /** Add a product to the basket using an existing basket identifier */;
   createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
   login: Session | null /** Obtain a JWT */;
@@ -132,7 +132,7 @@ export interface ProductListRootQueryTypeArgs {
   page: number | null;
 }
 export interface AddProductToBasketRootMutationTypeArgs {
-  basketId: UUID | null;
+  basketId: UUID;
   productId: number;
   quantity: number;
 }
@@ -313,7 +313,7 @@ export namespace PaginationResolvers {
 }
 export namespace RootMutationTypeResolvers {
   export interface Resolvers {
-    addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing or new basket identifier */;
+    addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing basket identifier */;
     createBasket?: CreateBasketResolver /** Create a new basket with a unique ID */;
     createProduct?: CreateProductResolver;
     login?: LoginResolver /** Obtain a JWT */;
@@ -327,7 +327,7 @@ export namespace RootMutationTypeResolvers {
     AddProductToBasketArgs
   >;
   export interface AddProductToBasketArgs {
-    basketId: UUID | null;
+    basketId: UUID;
     productId: number;
     quantity: number;
   }

@@ -10,6 +10,7 @@ import { Dispatch } from 'redux';
 import { SetBasketVisibility } from '../store/reducers/basket';
 import { BasketToggle } from './BasketToggle';
 import { BasketContent } from './BasketContent';
+import { spacing } from './style';
 
 const basketWidth = '30rem';
 const BasketContainer = styled('div')<{ visible: boolean }>(
@@ -48,7 +49,9 @@ const BasketUnderlay = styled('div')<{ visible: boolean }>(
 
 const BasketCtaContainer = styled('aside')({
   alignSelf: 'flex-end',
-  display: 'block',
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gridColumnGap: spacing.cat,
   width: '100%',
 });
 
@@ -98,6 +101,9 @@ export const Basket = ({
               <BasketCtaContainer>
                 <ButtonLink to="/basket" isFullWidth={true}>
                   Go to basket
+                </ButtonLink>
+                <ButtonLink to="/checkout" isFullWidth={true}>
+                  Checkout now
                 </ButtonLink>
               </BasketCtaContainer>
             </BasketContainer>

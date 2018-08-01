@@ -2,8 +2,9 @@ import * as React from 'react';
 import styled from 'react-emotion';
 import { spacing } from './style';
 import { Link } from 'react-router-dom';
-import BasketToggle from './BasketToggle';
+
 import Basket from './Basket';
+import LoginButton from './LoginButton';
 
 const LinkContainer = styled('ul')`
   padding: 0;
@@ -33,7 +34,10 @@ export default function({  }: Props) {
           <Link to="/shop">Shop</Link>
         </li>
       </LinkContainer>
-      <Basket />
+      <div>
+        <Basket />
+        <LoginButton />
+      </div>
     </NavContainer>
   );
 }
