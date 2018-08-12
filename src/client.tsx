@@ -10,25 +10,37 @@ import { InMemoryCache } from 'apollo-boost';
 import { createStore } from 'redux';
 import { hydrate as hydrateStyles } from 'emotion';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { setContext } from 'apollo-link-context';
 import throttle from 'lodash/throttle';
 import { createBrowserHistory } from 'history';
 
 import reducer, { State, Action } from './store/reducers';
 import { SetBasketVisibility } from './store/reducers/basket';
 
-const link = new HttpLink({ uri: 'http://localhost:4000/graphql' });
-
-export const clientClient = new ApolloClient({
-  link,
-  cache: new InMemoryCache().restore((window as any).__APOLLO_STATE__),
-  ssrForceFetchDelay: 100,
-});
-
 const store = createStore<State, Action, {}, {}>(
   reducer,
   (window as any).__SAVED_STATE__ as State,
   composeWithDevTools(),
 );
+
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from redux state if it exists
+  const token = store.getState().auth.token;
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+export const clientClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache().restore((window as any).__APOLLO_STATE__),
+  ssrForceFetchDelay: 100,
+});
 
 const history = createBrowserHistory();
 

@@ -6,6 +6,8 @@ import {
   Basket,
   Session,
   LoginRootMutationTypeArgs,
+  PlaceOrderRootMutationTypeArgs,
+  PlaceOrderResponse,
 } from '../../types/gql';
 
 export const CreateBasket = gql`
@@ -32,7 +34,7 @@ export const RemoveProduct = gql`
 `;
 
 export class RemoveItemMutation extends Mutation<
-  Basket,
+  { removeProductFromBasket: Basket },
   RemoveProductFromBasketRootMutationTypeArgs
 > {}
 
@@ -69,4 +71,27 @@ export const LOGIN = gql`
 export class LoginMutation extends Mutation<
   { login: Session },
   LoginRootMutationTypeArgs
+> {}
+
+export const PLACE_ORDER = gql`
+  mutation PlaceOrder(
+    $basketId: UUID!
+    $billingAddressId: UUID!
+    $shippingAddressId: UUID!
+  ) {
+    placeOrder(
+      basketId: $basketId
+      billingAddressId: $billingAddressId
+      shippingAddressId: $shippingAddressId
+    ) {
+      status
+      order {
+        id
+      }
+    }
+  }
+`;
+export class PlaceOrderMutation extends Mutation<
+  { placeOrder: PlaceOrderResponse },
+  PlaceOrderRootMutationTypeArgs
 > {}

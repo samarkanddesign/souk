@@ -28,7 +28,6 @@ export const LoginPage = ({ setToken }: Props) => {
               onSubmit={values => {
                 getSession({ variables: values })
                   .then(data => {
-                    console.log(data);
                     if (data && data.data && data.data.login) {
                       setToken(data.data.login.jwt);
                     }

@@ -6,6 +6,7 @@ import {
   Product,
   ProductListRootQueryTypeArgs,
   PagedProducts,
+  Address,
 } from '../../types/gql';
 import { Query } from 'react-apollo';
 
@@ -66,6 +67,21 @@ export const allProducts = gql`
       pagination {
         totalPages
       }
+    }
+  }
+`;
+
+export class UserAddressesQuery extends Query<
+  { userAddresses: Address[] },
+  {}
+> {}
+
+export const USER_ADDRESSES = gql`
+  {
+    userAddresses {
+      id
+      line1
+      city
     }
   }
 `;

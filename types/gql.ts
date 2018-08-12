@@ -20,6 +20,7 @@ export interface RootQueryType {
   category: Category | null /** Get a single category by id or slug */;
   product: Product | null /** Get a single product by id or slug */;
   productList: PagedProducts | null /** Get a paginated list of products */;
+  userAddresses: Address[];
 }
 
 export interface Basket {
@@ -77,12 +78,24 @@ export interface Pagination {
   totalPages: number;
 }
 
+export interface Address {
+  city: string;
+  country: string;
+  id: string;
+  line1: string | null;
+  line2: string | null;
+  line3: string | null;
+  name: string | null;
+  phone: string | null;
+  postcode: string;
+}
+
 export interface RootMutationType {
   addProductToBasket: Basket | null /** Add a product to the basket using an existing basket identifier */;
   createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
   login: Session | null /** Obtain a JWT */;
-  placeOrder: PlaceOrderResponse | null;
+  placeOrder: PlaceOrderResponse;
   register: RegisterResponse | null /** Register a new user and login */;
   removeProductFromBasket: Basket | null /** Remove a product from a basket */;
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
@@ -124,18 +137,6 @@ export interface Order {
   status: string;
   total: number;
   user: User;
-}
-
-export interface Address {
-  city: string;
-  country: string;
-  id: string;
-  line1: string | null;
-  line2: string | null;
-  line3: string | null;
-  name: string | null;
-  phone: string | null;
-  postcode: string;
 }
 
 export interface OrderItem {
@@ -190,8 +191,8 @@ export interface LoginRootMutationTypeArgs {
 }
 export interface PlaceOrderRootMutationTypeArgs {
   basketId: UUID;
-  billingAddressId: number;
-  shippingAddressId: number;
+  billingAddressId: UUID;
+  shippingAddressId: UUID;
 }
 export interface RegisterRootMutationTypeArgs {
   email: string;
@@ -222,6 +223,7 @@ export namespace RootQueryTypeResolvers {
     category?: CategoryResolver /** Get a single category by id or slug */;
     product?: ProductResolver /** Get a single product by id or slug */;
     productList?: ProductListResolver /** Get a paginated list of products */;
+    userAddresses?: UserAddressesResolver;
   }
 
   export type BasketResolver = Resolver<Basket | null, BasketArgs>;
@@ -249,6 +251,8 @@ export namespace RootQueryTypeResolvers {
   export interface ProductListArgs {
     page: number | null;
   }
+
+  export type UserAddressesResolver = Resolver<Address[]>;
 }
 export namespace BasketResolvers {
   export interface Resolvers {
@@ -353,6 +357,29 @@ export namespace PaginationResolvers {
   export type TotalEntriesResolver = Resolver<number>;
   export type TotalPagesResolver = Resolver<number>;
 }
+export namespace AddressResolvers {
+  export interface Resolvers {
+    city?: CityResolver;
+    country?: CountryResolver;
+    id?: IdResolver;
+    line1?: Line1Resolver;
+    line2?: Line2Resolver;
+    line3?: Line3Resolver;
+    name?: NameResolver;
+    phone?: PhoneResolver;
+    postcode?: PostcodeResolver;
+  }
+
+  export type CityResolver = Resolver<string>;
+  export type CountryResolver = Resolver<string>;
+  export type IdResolver = Resolver<string>;
+  export type Line1Resolver = Resolver<string | null>;
+  export type Line2Resolver = Resolver<string | null>;
+  export type Line3Resolver = Resolver<string | null>;
+  export type NameResolver = Resolver<string | null>;
+  export type PhoneResolver = Resolver<string | null>;
+  export type PostcodeResolver = Resolver<string>;
+}
 export namespace RootMutationTypeResolvers {
   export interface Resolvers {
     addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing basket identifier */;
@@ -398,14 +425,11 @@ export namespace RootMutationTypeResolvers {
     password: string;
   }
 
-  export type PlaceOrderResolver = Resolver<
-    PlaceOrderResponse | null,
-    PlaceOrderArgs
-  >;
+  export type PlaceOrderResolver = Resolver<PlaceOrderResponse, PlaceOrderArgs>;
   export interface PlaceOrderArgs {
     basketId: UUID;
-    billingAddressId: number;
-    shippingAddressId: number;
+    billingAddressId: UUID;
+    shippingAddressId: UUID;
   }
 
   export type RegisterResolver = Resolver<
@@ -513,29 +537,6 @@ export namespace OrderResolvers {
   export type StatusResolver = Resolver<string>;
   export type TotalResolver = Resolver<number>;
   export type UserResolver = Resolver<User>;
-}
-export namespace AddressResolvers {
-  export interface Resolvers {
-    city?: CityResolver;
-    country?: CountryResolver;
-    id?: IdResolver;
-    line1?: Line1Resolver;
-    line2?: Line2Resolver;
-    line3?: Line3Resolver;
-    name?: NameResolver;
-    phone?: PhoneResolver;
-    postcode?: PostcodeResolver;
-  }
-
-  export type CityResolver = Resolver<string>;
-  export type CountryResolver = Resolver<string>;
-  export type IdResolver = Resolver<string>;
-  export type Line1Resolver = Resolver<string | null>;
-  export type Line2Resolver = Resolver<string | null>;
-  export type Line3Resolver = Resolver<string | null>;
-  export type NameResolver = Resolver<string | null>;
-  export type PhoneResolver = Resolver<string | null>;
-  export type PostcodeResolver = Resolver<string>;
 }
 export namespace OrderItemResolvers {
   export interface Resolvers {
