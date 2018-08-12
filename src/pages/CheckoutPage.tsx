@@ -2,19 +2,25 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Option } from 'catling';
+import { Dispatch } from 'redux';
 
 import { PlaceOrderMutation, PLACE_ORDER } from '../graphql/mutations';
-import { State } from '../store/reducers';
+import { State, Action } from '../store/reducers';
 import { Formik } from 'formik';
-import { Button } from '../components/Button';
+import { Button, ButtonLink } from '../components/Button';
 import { UserAddressesQuery, USER_ADDRESSES } from '../graphql/queries';
+import { ForgetBasket } from '../store/reducers/basket';
 
 interface StateMappedToProps {
   basketId?: string;
 }
-type Props = StateMappedToProps;
 
-export const CheckoutPage = ({ basketId }: Props) => {
+interface DispatchMappedToProps {
+  forgetBasket: () => void;
+}
+type Props = StateMappedToProps & DispatchMappedToProps;
+
+export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
   if (!basketId) {
     return <Redirect to="/shop" />;
   }
@@ -36,7 +42,9 @@ export const CheckoutPage = ({ basketId }: Props) => {
                         shippingAddressId: '',
                       }}
                       onSubmit={values => {
-                        placeOrder({ variables: values }).then(console.log);
+                        placeOrder({ variables: values }).then(r => {
+                          forgetBasket();
+                        });
                       }}
                     >
                       {({ handleSubmit, handleChange }) => {
@@ -71,6 +79,9 @@ export const CheckoutPage = ({ basketId }: Props) => {
                                 </label>
                               );
                             })}
+                            <ButtonLink to="/address/new">
+                              Add new address
+                            </ButtonLink>
                             <Button>Place order</Button>
                           </form>
                         );
@@ -91,4 +102,13 @@ const mapStateToProps = (state: State): StateMappedToProps => ({
   basketId: state.basket.basketId,
 });
 
-export default connect(mapStateToProps)(CheckoutPage);
+const mapDispatchToProps = (
+  dispatch: Dispatch<Action>,
+): DispatchMappedToProps => ({
+  forgetBasket: () => dispatch(ForgetBasket()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CheckoutPage);

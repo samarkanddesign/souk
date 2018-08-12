@@ -92,6 +92,7 @@ export interface Address {
 
 export interface RootMutationType {
   addProductToBasket: Basket | null /** Add a product to the basket using an existing basket identifier */;
+  createAddress: CreateAddressResponse;
   createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
   login: Session | null /** Obtain a JWT */;
@@ -101,14 +102,19 @@ export interface RootMutationType {
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
 }
 
-export interface CreateProductResponse {
-  entity: Product | null;
+export interface CreateAddressResponse {
+  entity: Address | null;
   validation: (Validation | null)[] | null;
 }
 /** A validation error */
 export interface Validation {
   key: string;
   reason: string;
+}
+
+export interface CreateProductResponse {
+  entity: Product | null;
+  validation: (Validation | null)[] | null;
 }
 
 export interface Session {
@@ -173,6 +179,16 @@ export interface AddProductToBasketRootMutationTypeArgs {
   basketId: UUID;
   productId: number;
   quantity: number;
+}
+export interface CreateAddressRootMutationTypeArgs {
+  city: string;
+  country: string;
+  line1: string | null;
+  line2: string | null;
+  line3: string | null;
+  name: string | null;
+  phone: string | null;
+  postcode: string;
 }
 export interface CreateProductRootMutationTypeArgs {
   description: string;
@@ -383,6 +399,7 @@ export namespace AddressResolvers {
 export namespace RootMutationTypeResolvers {
   export interface Resolvers {
     addProductToBasket?: AddProductToBasketResolver /** Add a product to the basket using an existing basket identifier */;
+    createAddress?: CreateAddressResolver;
     createBasket?: CreateBasketResolver /** Create a new basket with a unique ID */;
     createProduct?: CreateProductResolver;
     login?: LoginResolver /** Obtain a JWT */;
@@ -400,6 +417,21 @@ export namespace RootMutationTypeResolvers {
     basketId: UUID;
     productId: number;
     quantity: number;
+  }
+
+  export type CreateAddressResolver = Resolver<
+    CreateAddressResponse,
+    CreateAddressArgs
+  >;
+  export interface CreateAddressArgs {
+    city: string;
+    country: string;
+    line1: string | null;
+    line2: string | null;
+    line3: string | null;
+    name: string | null;
+    phone: string | null;
+    postcode: string;
   }
 
   export type CreateBasketResolver = Resolver<Basket>;
@@ -468,13 +500,13 @@ export namespace RootMutationTypeResolvers {
     stockQty: number | null;
   }
 }
-export namespace CreateProductResponseResolvers {
+export namespace CreateAddressResponseResolvers {
   export interface Resolvers {
     entity?: EntityResolver;
     validation?: ValidationResolver;
   }
 
-  export type EntityResolver = Resolver<Product | null>;
+  export type EntityResolver = Resolver<Address | null>;
   export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 } /** A validation error */
 export namespace ValidationResolvers {
@@ -485,6 +517,15 @@ export namespace ValidationResolvers {
 
   export type KeyResolver = Resolver<string>;
   export type ReasonResolver = Resolver<string>;
+}
+export namespace CreateProductResponseResolvers {
+  export interface Resolvers {
+    entity?: EntityResolver;
+    validation?: ValidationResolver;
+  }
+
+  export type EntityResolver = Resolver<Product | null>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 }
 export namespace SessionResolvers {
   export interface Resolvers {

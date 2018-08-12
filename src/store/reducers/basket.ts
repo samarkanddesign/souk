@@ -15,7 +15,7 @@ export interface BasketState {
   showing: boolean;
 }
 
-interface SetBasketVisibility {
+export interface SetBasketVisibility {
   type: 'SetBasketVisibility';
   showing: boolean;
 }
@@ -27,7 +27,17 @@ export function SetBasketVisibility(showing: boolean): SetBasketVisibility {
   };
 }
 
-export type BasketAction = SetBasketId | SetBasketVisibility;
+export interface ForgetBasket {
+  type: 'ForgetBasket';
+}
+
+export function ForgetBasket(): ForgetBasket {
+  return {
+    type: 'ForgetBasket',
+  };
+}
+
+export type BasketAction = SetBasketId | SetBasketVisibility | ForgetBasket;
 
 const initialState = (): BasketState => ({ showing: false });
 
@@ -41,6 +51,9 @@ export function basketReducer(
     }
     case 'SetBasketVisibility': {
       return { ...state, showing: action.showing };
+    }
+    case 'ForgetBasket': {
+      return { ...state, basketId: undefined };
     }
     default: {
       return state;

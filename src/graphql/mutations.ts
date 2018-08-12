@@ -8,6 +8,8 @@ import {
   LoginRootMutationTypeArgs,
   PlaceOrderRootMutationTypeArgs,
   PlaceOrderResponse,
+  CreateAddressResponse,
+  CreateAddressRootMutationTypeArgs,
 } from '../../types/gql';
 
 export const CreateBasket = gql`
@@ -94,4 +96,49 @@ export const PLACE_ORDER = gql`
 export class PlaceOrderMutation extends Mutation<
   { placeOrder: PlaceOrderResponse },
   PlaceOrderRootMutationTypeArgs
+> {}
+
+export const CREATE_ADDRESS = gql`
+  mutation CreateAddress(
+    $name: String
+    $phone: String
+    $line1: String
+    $line2: String
+    $line3: String
+    $postcode: String!
+    $city: String!
+    $country: String!
+  ) {
+    createAddress(
+      name: $name
+      phone: $phone
+      line1: $line1
+      line2: $line2
+      line3: $line3
+      postcode: $postcode
+      city: $city
+      country: $country
+    ) {
+      entity {
+        id
+        name
+        phone
+        line1
+        line2
+        line3
+        postcode
+        city
+        country
+      }
+      validation {
+        key
+        reason
+      }
+    }
+  }
+`;
+
+export class CreateAddressMutation extends Mutation<
+  { createAddress: CreateAddressResponse },
+  CreateAddressRootMutationTypeArgs
 > {}
