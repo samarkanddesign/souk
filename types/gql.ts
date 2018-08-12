@@ -82,6 +82,7 @@ export interface RootMutationType {
   createBasket: Basket /** Create a new basket with a unique ID */;
   createProduct: CreateProductResponse | null;
   login: Session | null /** Obtain a JWT */;
+  placeOrder: PlaceOrderResponse | null;
   register: RegisterResponse | null /** Register a new user and login */;
   removeProductFromBasket: Basket | null /** Remove a product from a basket */;
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
@@ -106,6 +107,42 @@ export interface User {
   email: string;
   id: string;
   name: string;
+}
+
+export interface PlaceOrderResponse {
+  order: Order | null;
+  status: string | null;
+}
+
+export interface Order {
+  billingAddress: Address;
+  createdAt: NaiveDateTime;
+  id: string;
+  items: (OrderItem | null)[];
+  note: string | null;
+  shippingAddress: Address;
+  status: string;
+  total: number;
+  user: User;
+}
+
+export interface Address {
+  city: string;
+  country: string;
+  id: string;
+  line1: string | null;
+  line2: string | null;
+  line3: string | null;
+  name: string | null;
+  phone: string | null;
+  postcode: string;
+}
+
+export interface OrderItem {
+  description: string;
+  order: Order;
+  pricePaid: number;
+  product: Product | null;
 }
 
 export interface RegisterResponse {
@@ -150,6 +187,11 @@ export interface CreateProductRootMutationTypeArgs {
 export interface LoginRootMutationTypeArgs {
   email: string;
   password: string;
+}
+export interface PlaceOrderRootMutationTypeArgs {
+  basketId: UUID;
+  billingAddressId: number;
+  shippingAddressId: number;
 }
 export interface RegisterRootMutationTypeArgs {
   email: string;
@@ -317,6 +359,7 @@ export namespace RootMutationTypeResolvers {
     createBasket?: CreateBasketResolver /** Create a new basket with a unique ID */;
     createProduct?: CreateProductResolver;
     login?: LoginResolver /** Obtain a JWT */;
+    placeOrder?: PlaceOrderResolver;
     register?: RegisterResolver /** Register a new user and login */;
     removeProductFromBasket?: RemoveProductFromBasketResolver /** Remove a product from a basket */;
     updateProduct?: UpdateProductResolver /** Update an existing product */;
@@ -353,6 +396,16 @@ export namespace RootMutationTypeResolvers {
   export interface LoginArgs {
     email: string;
     password: string;
+  }
+
+  export type PlaceOrderResolver = Resolver<
+    PlaceOrderResponse | null,
+    PlaceOrderArgs
+  >;
+  export interface PlaceOrderArgs {
+    basketId: UUID;
+    billingAddressId: number;
+    shippingAddressId: number;
   }
 
   export type RegisterResolver = Resolver<
@@ -428,6 +481,74 @@ export namespace UserResolvers {
   export type EmailResolver = Resolver<string>;
   export type IdResolver = Resolver<string>;
   export type NameResolver = Resolver<string>;
+}
+export namespace PlaceOrderResponseResolvers {
+  export interface Resolvers {
+    order?: OrderResolver;
+    status?: StatusResolver;
+  }
+
+  export type OrderResolver = Resolver<Order | null>;
+  export type StatusResolver = Resolver<string | null>;
+}
+export namespace OrderResolvers {
+  export interface Resolvers {
+    billingAddress?: BillingAddressResolver;
+    createdAt?: CreatedAtResolver;
+    id?: IdResolver;
+    items?: ItemsResolver;
+    note?: NoteResolver;
+    shippingAddress?: ShippingAddressResolver;
+    status?: StatusResolver;
+    total?: TotalResolver;
+    user?: UserResolver;
+  }
+
+  export type BillingAddressResolver = Resolver<Address>;
+  export type CreatedAtResolver = Resolver<NaiveDateTime>;
+  export type IdResolver = Resolver<string>;
+  export type ItemsResolver = Resolver<(OrderItem | null)[]>;
+  export type NoteResolver = Resolver<string | null>;
+  export type ShippingAddressResolver = Resolver<Address>;
+  export type StatusResolver = Resolver<string>;
+  export type TotalResolver = Resolver<number>;
+  export type UserResolver = Resolver<User>;
+}
+export namespace AddressResolvers {
+  export interface Resolvers {
+    city?: CityResolver;
+    country?: CountryResolver;
+    id?: IdResolver;
+    line1?: Line1Resolver;
+    line2?: Line2Resolver;
+    line3?: Line3Resolver;
+    name?: NameResolver;
+    phone?: PhoneResolver;
+    postcode?: PostcodeResolver;
+  }
+
+  export type CityResolver = Resolver<string>;
+  export type CountryResolver = Resolver<string>;
+  export type IdResolver = Resolver<string>;
+  export type Line1Resolver = Resolver<string | null>;
+  export type Line2Resolver = Resolver<string | null>;
+  export type Line3Resolver = Resolver<string | null>;
+  export type NameResolver = Resolver<string | null>;
+  export type PhoneResolver = Resolver<string | null>;
+  export type PostcodeResolver = Resolver<string>;
+}
+export namespace OrderItemResolvers {
+  export interface Resolvers {
+    description?: DescriptionResolver;
+    order?: OrderResolver;
+    pricePaid?: PricePaidResolver;
+    product?: ProductResolver;
+  }
+
+  export type DescriptionResolver = Resolver<string>;
+  export type OrderResolver = Resolver<Order>;
+  export type PricePaidResolver = Resolver<number>;
+  export type ProductResolver = Resolver<Product | null>;
 }
 export namespace RegisterResponseResolvers {
   export interface Resolvers {

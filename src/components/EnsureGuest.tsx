@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Option } from 'catling';
+import { Redirect, RouteComponentProps } from 'react-router';
 import { State } from '../store/reducers';
+import qs from 'qs';
 
 interface StateMappedToProps {
   isLoggedIn: boolean;
@@ -12,15 +14,19 @@ interface OwnProps {
   redirect?: string;
 }
 
-type Props = StateMappedToProps & OwnProps;
+type Props = StateMappedToProps & OwnProps & RouteComponentProps<{}>;
 
 export const EnsureGuest = ({
   isLoggedIn,
   children,
   redirect = '/shop',
+  location,
 }: Props) => {
   if (isLoggedIn) {
-    return <Redirect to={redirect} />;
+    const r = Option(
+      qs.parse(location.search, { ignoreQueryPrefix: true }).intended,
+    ).getOrElse(redirect);
+    return <Redirect to={r} />;
   }
 
   return children;

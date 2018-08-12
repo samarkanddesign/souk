@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Formik } from 'formik';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+
 import { LoginMutation, LOGIN } from '../graphql/mutations';
 import { Button } from '../components/Button';
 import Input from '../components/Input';
 import { SetToken } from '../store/reducers/auth';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import { Action } from '../store/reducers';
 import { Vspace } from '../components/Vspace';
 
@@ -16,29 +17,6 @@ interface DispatchMappedToProps {
 type Props = DispatchMappedToProps;
 
 export const LoginPage = ({ setToken }: Props) => {
-  return (
-    <div>
-      <LoginForm setToken={setToken} />
-    </div>
-  );
-};
-
-const mapDispatchToProps = (
-  dispatch: Dispatch<Action>,
-): DispatchMappedToProps => ({
-  setToken: token => dispatch(SetToken(token)),
-});
-
-export default connect(
-  () => ({}),
-  mapDispatchToProps,
-)(LoginPage);
-
-interface LoginFormProps {
-  setToken: (token: string) => void;
-}
-
-const LoginForm = ({ setToken }: LoginFormProps) => {
   return (
     <div>
       <h2>Login</h2>
@@ -91,3 +69,14 @@ const LoginForm = ({ setToken }: LoginFormProps) => {
     </div>
   );
 };
+
+const mapDispatchToProps = (
+  dispatch: Dispatch<Action>,
+): DispatchMappedToProps => ({
+  setToken: token => dispatch(SetToken(token)),
+});
+
+export default connect(
+  () => ({}),
+  mapDispatchToProps,
+)(LoginPage);

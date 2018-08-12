@@ -55,7 +55,7 @@ const AuthRoute = ({ component: Component, ...rest }: RouteProps) => {
     <Route
       {...rest}
       render={matchProps => (
-        <EnsureAuth>
+        <EnsureAuth {...matchProps}>
           {Component ? <Component {...matchProps} /> : null}
         </EnsureAuth>
       )}
@@ -68,7 +68,7 @@ const GuestRoute = ({ component: Component, ...rest }: RouteProps) => {
     <Route
       {...rest}
       render={matchProps => (
-        <EnsureGuest>
+        <EnsureGuest {...matchProps}>
           {Component ? <Component {...matchProps} /> : null}
         </EnsureGuest>
       )}
