@@ -16,6 +16,18 @@ export const typeSize = {
   rhino: '1.999rem',
 };
 
+export const greys = {
+  black: '#000',
+  midGrey: '#555555',
+  gray: '#777777',
+  silver: '#999999',
+  lightSilver: '#AAAAAA',
+  moonGrey: '#CCCCCC',
+  lightGrey: '#EEEEEE',
+  nearWhite: '#F4F4F4',
+  white: '#FFFFFF',
+};
+
 export const animation = {
   spin: keyframes`
 from {transform: rotate(0deg);}

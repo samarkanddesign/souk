@@ -81,7 +81,10 @@ export const USER_ADDRESSES = gql`
     userAddresses {
       id
       line1
+      line2
+      postcode
       city
+      country
     }
   }
 `;
