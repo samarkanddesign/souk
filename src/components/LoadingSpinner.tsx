@@ -2,8 +2,6 @@ import * as React from 'react';
 import styled, { keyframes } from 'react-emotion';
 import { typeSize, animation } from './style';
 
-interface Props {}
-
 const SpinnerContainer = styled('div')`
   font-size: ${typeSize.rhino};
   display: flex;
@@ -14,10 +12,10 @@ const SpinnerContainer = styled('div')`
   }
 `;
 
-export default function({  }: Props) {
+export const LoadingSpinner = () => {
   return (
     <SpinnerContainer>
-      <span>🍥</span>
+      <span>⚙️</span>
     </SpinnerContainer>
   );
-}
+};

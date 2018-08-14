@@ -11,7 +11,7 @@ import ProductPage from './pages/ProductPage';
 
 import LoginPage from './pages/LoginPage';
 import EnsureAuth from './components/EnsureAuth';
-import CheckoutPage from './pages/CheckoutPage';
+import { CheckoutPageContainer } from './pages/CheckoutPageContainer';
 import { CreateAddressPage } from './pages/CreateAddressPage';
 import EnsureGuest from './components/EnsureGuest';
 
@@ -44,7 +44,7 @@ const App = () => (
         <Route exact path="/shop" component={ShopPage} />
         <Route exact path="/product/:slug" component={ProductPage} />
         <GuestRoute exact path="/login" component={LoginPage} />
-        <AuthRoute exact path="/checkout" component={CheckoutPage} />
+        <AuthRoute exact path="/checkout" component={CheckoutPageContainer} />
         <AuthRoute exact path="/address/new" component={CreateAddressPage} />
         <Route component={NotFoundPage} />
       </Switch>

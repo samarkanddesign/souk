@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GetBasket, BasketQuery } from '../graphql/queries';
+import { GET_BASKET, BasketQuery } from '../graphql/queries';
 import { connect } from 'react-redux';
 import { State, Action } from '../store/reducers';
 import BasketInitializer from './BasketInitializer';
@@ -11,6 +11,7 @@ import { SetBasketVisibility } from '../store/reducers/basket';
 import { BasketToggle } from './BasketToggle';
 import { BasketContent } from './BasketContent';
 import { spacing } from './style';
+import { basketTotal } from '../utils/basketTotal';
 
 const basketWidth = '30rem';
 const BasketContainer = styled('div')<{ visible: boolean }>(
@@ -81,7 +82,7 @@ export const Basket = ({
     return <BasketInitializer />;
   }
   return (
-    <BasketQuery query={GetBasket} variables={{ basketId }}>
+    <BasketQuery query={GET_BASKET} variables={{ basketId }}>
       {({ data, loading }) => {
         const items = (data && data.basket && data.basket.items) || [];
         return (
@@ -98,6 +99,7 @@ export const Basket = ({
                 basketId={basketId}
                 items={items}
               />
+              <p>TOTAL: £{basketTotal(items)}</p>
               <BasketCtaContainer>
                 <ButtonLink to="/basket" isFullWidth={true}>
                   Go to basket

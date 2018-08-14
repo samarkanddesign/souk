@@ -10,7 +10,7 @@ import {
 } from '../../types/gql';
 import { Query } from 'react-apollo';
 
-export const GetBasket = gql`
+export const GET_BASKET = gql`
   query GetBasket($basketId: UUID!) {
     basket(basketId: $basketId) {
       ...BasketFragment

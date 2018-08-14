@@ -2,7 +2,6 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
-import LoadingSpinner from '../components/LoadingSpinner';
 import NotFound from '../components/NotFound';
 import { AddToBasketMutation, AddProductToBasket } from '../graphql/mutations';
 import { SingleProductQuery, SingleProduct } from '../graphql/queries';
@@ -10,6 +9,7 @@ import { State, Action } from '../store/reducers';
 import { connect } from 'react-redux';
 import { SetBasketVisibility } from '../store/reducers/basket';
 import { Dispatch } from 'redux';
+import { LoadingSpinner } from '../components';
 
 interface StateMappedToProps {
   basketId?: string;

@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 
 const buttonColor = '#333';
 
-export const Button = styled('button')<{ isFullWidth?: boolean }>(
+export const Button = styled('button', {
+  shouldForwardProp: prop => prop !== 'isFullWidth',
+})<{ isFullWidth?: boolean }>(
   {
     padding: '1rem 2rem',
     backgroundColor: buttonColor,
