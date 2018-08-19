@@ -53,7 +53,7 @@ const ProductPage = ({ match, basketId, showBasket }: Props) => {
                   : () => {};
 
                 return (
-                  <ProductDetail product={product} addToCart={addToCart} />
+                  <ProductDetail product={product} addToBasket={addToCart} />
                 );
               }}
             </AddToBasketMutation>

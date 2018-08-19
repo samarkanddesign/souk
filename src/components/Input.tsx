@@ -9,12 +9,18 @@ export const baseInputStyle = css`
   border-radius: 4px;
   padding: ${spacing.cat};
   background: hsl(22, 12%, 98%);
+  font-size: inherit;
   &:hover {
     background: hsl(22, 12%, 95%);
   }
   &:focus {
     background: hsl(22, 12%, 93%);
   }
+`;
+
+const LabelContainer = styled('span')`
+  margin-bottom: ${spacing.ant};
+  display: inline-block;
 `;
 
 export const StyledInput = styled('input')`
@@ -29,7 +35,7 @@ export const Input = ({ label, ref, ...inputProps }: Props) => {
   return (
     <div>
       <label>
-        {label}
+        <LabelContainer>{label}</LabelContainer>
 
         <StyledInput {...inputProps} />
       </label>

@@ -1,4 +1,5 @@
-import { keyframes } from 'react-emotion';
+import { keyframes, css } from 'react-emotion';
+import { Interpolation } from 'emotion';
 
 export const spacing = {
   ant: '0.444rem',
@@ -37,4 +38,29 @@ to {transform: rotate(360deg);}
   from: {opacity: 0;}
   to: {opacity: 1;}
 `,
+};
+
+type Breakpoint = 'sm' | 'lg' | 'md' | 'xl';
+
+export const media: Record<Breakpoint, (...args: Interpolation[]) => string> = {
+  sm: (...args) => css`
+    @media (max-width: 667px) {
+      ${css(...args)};
+    }
+  `,
+  md: (...args) => css`
+    @media (min-width: 668px) {
+      ${css(...args)};
+    }
+  `,
+  lg: (...args) => css`
+    @media (min-width: 1025px) {
+      ${css(...args)};
+    }
+  `,
+  xl: (...args) => css`
+    @media (min-width: 1695px) {
+      ${css(...args)};
+    }
+  `,
 };

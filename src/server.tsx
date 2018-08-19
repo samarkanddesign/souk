@@ -16,22 +16,6 @@ import { createStore } from 'redux';
 
 const link = new HttpLink({ uri: 'http://localhost:4000/graphql', fetch });
 
-export const serverClient = new ApolloClient({
-  link,
-  cache: new InMemoryCache(),
-  ssrMode: true,
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'network-only',
-      errorPolicy: 'ignore',
-    },
-    query: {
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all',
-    },
-  },
-});
-
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST as string);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -47,6 +31,12 @@ server
   .use(cookieParser())
   .use(errorHandler)
   .get('/*', async (req, res) => {
+    const serverClient = new ApolloClient({
+      link,
+      cache: new InMemoryCache(),
+      ssrMode: true,
+    });
+
     const context: any = {};
     const basketId: string | undefined = req.cookies.basketId;
     const token: string | undefined = req.cookies.token;

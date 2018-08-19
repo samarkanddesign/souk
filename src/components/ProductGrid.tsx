@@ -4,12 +4,16 @@ import styled from 'react-emotion';
 import { ProductTile } from './ProductTile';
 import { Product } from '../../types/gql';
 import { ResetList } from './Styled';
+import { media, spacing } from './style';
 
 const ProductGridContainer = styled(ResetList)`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-column-gap: 1rem;
-  grid-row-gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  ${media.md`
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  `};
+  grid-column-gap: ${spacing.goat};
+  grid-row-gap: ${spacing.goat};
   grid-auto-rows: 1fr;
   &::before {
     content: '';

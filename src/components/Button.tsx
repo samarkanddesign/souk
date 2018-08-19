@@ -14,7 +14,7 @@ export const Button = styled('button', {
       backgroundColor: '#444',
       borderColor: '#444',
     },
-    borderRadius: '0.5rem',
+
     cursor: 'pointer',
     color: '#fff',
     fontSize: '100%',

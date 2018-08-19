@@ -16,6 +16,7 @@ import { createBrowserHistory } from 'history';
 
 import reducer, { State, Action } from './store/reducers';
 import { SetBasketVisibility } from './store/reducers/basket';
+import { getTokenExpiry } from './utils/tokenExpiry';
 
 const store = createStore<State, Action, {}, {}>(
   reducer,
@@ -70,7 +71,9 @@ import('js-cookie').then(cookies => {
       }
 
       if (token) {
-        cookies.set('token', token);
+        getTokenExpiry(token).forEach(expires =>
+          cookies.set('token', token, { expires }),
+        );
       } else {
         cookies.remove('token');
       }
@@ -79,7 +82,9 @@ import('js-cookie').then(cookies => {
 });
 
 history.listen(() => {
-  store.dispatch(SetBasketVisibility(false));
+  if (store.getState().basket.showing) {
+    store.dispatch(SetBasketVisibility(false));
+  }
 });
 
 if (module.hot) {

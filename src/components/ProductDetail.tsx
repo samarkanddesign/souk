@@ -6,10 +6,10 @@ import { Button } from './Button';
 
 interface Props {
   product: Product;
-  addToCart: () => void;
+  addToBasket: () => void;
 }
 
-export const ProductDetail = ({ product, addToCart }: Props) => {
+export const ProductDetail = ({ product, addToBasket }: Props) => {
   return (
     <>
       <h1>{product.name}</h1>
@@ -31,7 +31,7 @@ export const ProductDetail = ({ product, addToCart }: Props) => {
         .get()}
       <div>{product.description}</div>
 
-      <Button onClick={addToCart}>Add To Cart</Button>
+      <Button onClick={addToBasket}>Add To Basket</Button>
     </>
   );
 };

@@ -23,6 +23,7 @@ const ChoiceWrapper = styled('div')`
     display: none;
     &:checked + label {
       background: ${greys.lightGrey};
+      border-color: ${greys.gray};
     }
     & + label:hover {
       background: ${greys.nearWhite};
