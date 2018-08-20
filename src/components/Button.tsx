@@ -1,18 +1,17 @@
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-
-const buttonColor = '#333';
+import { greys } from './style';
 
 export const Button = styled('button', {
   shouldForwardProp: prop => prop !== 'isFullWidth',
 })<{ isFullWidth?: boolean }>(
   {
     padding: '1rem 2rem',
-    backgroundColor: buttonColor,
-    border: `2px solid ${buttonColor}`,
+    backgroundColor: greys.b,
+    border: `2px solid ${greys.b}`,
     '&:hover': {
-      backgroundColor: '#444',
-      borderColor: '#444',
+      backgroundColor: greys.c,
+      borderColor: greys.c,
     },
 
     cursor: 'pointer',

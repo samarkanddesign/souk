@@ -18,15 +18,15 @@ export const typeSize = {
 };
 
 export const greys = {
-  black: '#000',
-  midGrey: '#555555',
-  gray: '#777777',
-  silver: '#999999',
-  lightSilver: '#AAAAAA',
-  moonGrey: '#CCCCCC',
-  lightGrey: '#EEEEEE',
-  nearWhite: '#F4F4F4',
-  white: '#FFFFFF',
+  a: '#000',
+  b: '#555555',
+  c: '#777777',
+  d: '#999999',
+  e: '#AAAAAA',
+  f: '#CCCCCC',
+  g: '#EEEEEE',
+  h: '#F4F4F4',
+  i: '#FFFFFF',
 };
 
 export const animation = {

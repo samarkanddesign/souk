@@ -15,18 +15,18 @@ const ChoiceWrapper = styled('div')`
     width: 100%;
     height: 100%;
     cursor: pointer;
-    border: 1px solid ${greys.moonGrey};
+    border: 1px solid ${greys.f};
     padding: ${spacing.cat};
   }
 
   > input {
     display: none;
     &:checked + label {
-      background: ${greys.lightGrey};
-      border-color: ${greys.gray};
+      background: ${greys.f};
+      border-color: ${greys.c};
     }
     & + label:hover {
-      background: ${greys.nearWhite};
+      background: ${greys.h};
     }
   }
 `;

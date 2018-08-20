@@ -36,7 +36,10 @@ const ShopPage = (props: Props) => {
       <div>
         <h1>Shop</h1>
         <p>Page {page}</p>
-        <AllProductsQuery query={allProducts} variables={{ page }}>
+        <AllProductsQuery
+          query={allProducts}
+          variables={{ page, pageSize: 12 }}
+        >
           {({ data }) => {
             const products = Option(data).flatMap(d => Option(d.productList));
 

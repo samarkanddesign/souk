@@ -10,6 +10,8 @@ import {
   PlaceOrderResponse,
   CreateAddressResponse,
   CreateAddressRootMutationTypeArgs,
+  RegisterResponse,
+  RegisterRootMutationTypeArgs,
 } from '../../types/gql';
 
 export const CreateBasket = gql`
@@ -73,6 +75,29 @@ export const LOGIN = gql`
 export class LoginMutation extends Mutation<
   { login: Session },
   LoginRootMutationTypeArgs
+> {}
+
+export const REGISTER = gql`
+  mutation Register($email: String!, $password: String!, $name: String!) {
+    register(email: $email, password: $password, name: $name) {
+      entity {
+        jwt
+        user {
+          name
+          id
+        }
+      }
+      validation {
+        reason
+        key
+      }
+    }
+  }
+`;
+
+export class RegisterMutation extends Mutation<
+  { register: RegisterResponse },
+  RegisterRootMutationTypeArgs
 > {}
 
 export const PLACE_ORDER = gql`
