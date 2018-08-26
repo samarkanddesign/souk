@@ -16,6 +16,7 @@ export type NaiveDateTime = any;
 
 export interface RootQueryType {
   basket: Basket | null /** Get a basket by its identifier */;
+  cards: Card[] /** Get the saved cards for the current user */;
   categories: Category[] /** Get all categories */;
   category: Category | null /** Get a single category by id or slug */;
   product: Product | null /** Get a single product by id or slug */;
@@ -66,6 +67,15 @@ export interface ProductImage {
   url: string;
 }
 
+export interface Card {
+  brand: string;
+  expMonth: number;
+  expYear: number;
+  funding: string;
+  id: string;
+  lastFour: string;
+}
+
 export interface PagedProducts {
   pagination: Pagination;
   products: Product[];
@@ -99,12 +109,13 @@ export interface RootMutationType {
   placeOrder: PlaceOrderResponse;
   register: RegisterResponse | null /** Register a new user and login */;
   removeProductFromBasket: Basket | null /** Remove a product from a basket */;
+  saveCard: Card[];
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
 }
 
 export interface CreateAddressResponse {
   entity: Address | null;
-  validation: Validation[];
+  validation: (Validation | null)[] | null;
 }
 /** A validation error */
 export interface Validation {
@@ -114,7 +125,7 @@ export interface Validation {
 
 export interface CreateProductResponse {
   entity: Product | null;
-  validation: Validation[];
+  validation: (Validation | null)[] | null;
 }
 
 export interface Session {
@@ -154,12 +165,12 @@ export interface OrderItem {
 
 export interface RegisterResponse {
   entity: Session | null;
-  validation: Validation[];
+  validation: (Validation | null)[] | null;
 }
 
 export interface UpdateProductResponse {
   entity: Product | null;
-  validation: Validation[];
+  validation: (Validation | null)[] | null;
 }
 export interface BasketRootQueryTypeArgs {
   basketId: UUID | null;
@@ -174,7 +185,6 @@ export interface ProductRootQueryTypeArgs {
 }
 export interface ProductListRootQueryTypeArgs {
   page: number | null;
-  pageSize: number | null;
 }
 export interface AddProductToBasketRootMutationTypeArgs {
   basketId: UUID;
@@ -220,6 +230,9 @@ export interface RemoveProductFromBasketRootMutationTypeArgs {
   basketId: UUID;
   itemId: number;
 }
+export interface SaveCardRootMutationTypeArgs {
+  token: string;
+}
 export interface UpdateProductRootMutationTypeArgs {
   description: string | null;
   featured: boolean | null;
@@ -236,6 +249,7 @@ export interface UpdateProductRootMutationTypeArgs {
 export namespace RootQueryTypeResolvers {
   export interface Resolvers {
     basket?: BasketResolver /** Get a basket by its identifier */;
+    cards?: CardsResolver /** Get the saved cards for the current user */;
     categories?: CategoriesResolver /** Get all categories */;
     category?: CategoryResolver /** Get a single category by id or slug */;
     product?: ProductResolver /** Get a single product by id or slug */;
@@ -248,6 +262,7 @@ export namespace RootQueryTypeResolvers {
     basketId: UUID | null;
   }
 
+  export type CardsResolver = Resolver<Card[]>;
   export type CategoriesResolver = Resolver<Category[]>;
   export type CategoryResolver = Resolver<Category | null, CategoryArgs>;
   export interface CategoryArgs {
@@ -267,7 +282,6 @@ export namespace RootQueryTypeResolvers {
   >;
   export interface ProductListArgs {
     page: number | null;
-    pageSize: number | null;
   }
 
   export type UserAddressesResolver = Resolver<Address[]>;
@@ -353,6 +367,23 @@ export namespace ProductImageResolvers {
   export type IdResolver = Resolver<string>;
   export type UrlResolver = Resolver<string>;
 }
+export namespace CardResolvers {
+  export interface Resolvers {
+    brand?: BrandResolver;
+    expMonth?: ExpMonthResolver;
+    expYear?: ExpYearResolver;
+    funding?: FundingResolver;
+    id?: IdResolver;
+    lastFour?: LastFourResolver;
+  }
+
+  export type BrandResolver = Resolver<string>;
+  export type ExpMonthResolver = Resolver<number>;
+  export type ExpYearResolver = Resolver<number>;
+  export type FundingResolver = Resolver<string>;
+  export type IdResolver = Resolver<string>;
+  export type LastFourResolver = Resolver<string>;
+}
 export namespace PagedProductsResolvers {
   export interface Resolvers {
     pagination?: PaginationResolver;
@@ -408,6 +439,7 @@ export namespace RootMutationTypeResolvers {
     placeOrder?: PlaceOrderResolver;
     register?: RegisterResolver /** Register a new user and login */;
     removeProductFromBasket?: RemoveProductFromBasketResolver /** Remove a product from a basket */;
+    saveCard?: SaveCardResolver;
     updateProduct?: UpdateProductResolver /** Update an existing product */;
   }
 
@@ -485,6 +517,11 @@ export namespace RootMutationTypeResolvers {
     itemId: number;
   }
 
+  export type SaveCardResolver = Resolver<Card[], SaveCardArgs>;
+  export interface SaveCardArgs {
+    token: string;
+  }
+
   export type UpdateProductResolver = Resolver<
     UpdateProductResponse | null,
     UpdateProductArgs
@@ -509,7 +546,7 @@ export namespace CreateAddressResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Address | null>;
-  export type ValidationResolver = Resolver<Validation[]>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 } /** A validation error */
 export namespace ValidationResolvers {
   export interface Resolvers {
@@ -527,7 +564,7 @@ export namespace CreateProductResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Product | null>;
-  export type ValidationResolver = Resolver<Validation[]>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 }
 export namespace SessionResolvers {
   export interface Resolvers {
@@ -601,7 +638,7 @@ export namespace RegisterResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Session | null>;
-  export type ValidationResolver = Resolver<Validation[]>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 }
 export namespace UpdateProductResponseResolvers {
   export interface Resolvers {
@@ -610,5 +647,5 @@ export namespace UpdateProductResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Product | null>;
-  export type ValidationResolver = Resolver<Validation[]>;
+  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
 }

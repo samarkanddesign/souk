@@ -8,4 +8,10 @@ declare module 'isomorphic-unfetch' {
   export default fetch;
 }
 
+declare global {
+  interface Window {
+    foo: string;
+  }
+}
+
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

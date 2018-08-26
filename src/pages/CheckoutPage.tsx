@@ -2,7 +2,12 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Formik } from 'formik';
 import { Option } from 'catling';
-import { PlaceOrderMutation, PLACE_ORDER } from '../graphql/mutations';
+import {
+  PlaceOrderMutation,
+  PLACE_ORDER,
+  SaveCardMutation,
+  SAVE_CARD,
+} from '../graphql/mutations';
 import {
   StateMappedToProps,
   DispatchMappedToProps,
@@ -17,7 +22,13 @@ import {
   Button,
   LoadingSpinner,
 } from '../components';
-import { UserAddressesQuery, USER_ADDRESSES } from '../graphql/queries';
+import {
+  UserAddressesQuery,
+  USER_ADDRESSES,
+  CardsQuery,
+  CARDS,
+} from '../graphql/queries';
+import { CardForm } from '../components/CardForm';
 
 type Props = StateMappedToProps & DispatchMappedToProps;
 
@@ -92,6 +103,47 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                                   );
                                 })}
                               </Vspace>
+
+                              <CardsQuery query={CARDS}>
+                                {({ data, refetch }) => {
+                                  return (
+                                    <>
+                                      {data && data.cards
+                                        ? data.cards.map(c => (
+                                            <label
+                                              key={c.id}
+                                              style={{ display: 'block' }}
+                                            >
+                                              <input
+                                                type="radio"
+                                                value={c.id}
+                                                name="card"
+                                              />
+                                              {c.brand} - {c.lastFour} -{' '}
+                                              {c.expMonth} / {c.expYear}
+                                            </label>
+                                          ))
+                                        : 'cards loading'}
+
+                                      <SaveCardMutation mutation={SAVE_CARD}>
+                                        {saveCard => {
+                                          return (
+                                            <div>
+                                              <CardForm
+                                                saveCard={token => {
+                                                  saveCard({
+                                                    variables: { token },
+                                                  }).then(() => refetch());
+                                                }}
+                                              />
+                                            </div>
+                                          );
+                                        }}
+                                      </SaveCardMutation>
+                                    </>
+                                  );
+                                }}
+                              </CardsQuery>
 
                               <ButtonLink to="/address/new">
                                 Add new address

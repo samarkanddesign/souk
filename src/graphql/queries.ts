@@ -7,6 +7,7 @@ import {
   ProductListRootQueryTypeArgs,
   PagedProducts,
   Address,
+  Card,
 } from '../../types/gql';
 import { Query } from 'react-apollo';
 
@@ -85,6 +86,20 @@ export const USER_ADDRESSES = gql`
       postcode
       city
       country
+    }
+  }
+`;
+
+export class CardsQuery extends Query<{ cards: Card[] }, {}> {}
+
+export const CARDS = gql`
+  {
+    cards {
+      id
+      expYear
+      expMonth
+      brand
+      lastFour
     }
   }
 `;

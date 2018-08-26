@@ -12,6 +12,8 @@ import {
   CreateAddressRootMutationTypeArgs,
   RegisterResponse,
   RegisterRootMutationTypeArgs,
+  Card,
+  SaveCardRootMutationTypeArgs,
 } from '../../types/gql';
 
 export const CreateBasket = gql`
@@ -166,4 +168,21 @@ export const CREATE_ADDRESS = gql`
 export class CreateAddressMutation extends Mutation<
   { createAddress: CreateAddressResponse },
   CreateAddressRootMutationTypeArgs
+> {}
+
+export const SAVE_CARD = gql`
+  mutation SaveCard($token: String!) {
+    saveCard(token: $token) {
+      id
+      expYear
+      expMonth
+      brand
+      lastFour
+    }
+  }
+`;
+
+export class SaveCardMutation extends Mutation<
+  { saveCard: Card[] },
+  SaveCardRootMutationTypeArgs
 > {}
