@@ -145,7 +145,6 @@ export interface PlaceOrderResponse {
 }
 
 export interface Order {
-  billingAddress: Address;
   createdAt: NaiveDateTime;
   id: string;
   items: (OrderItem | null)[];
@@ -218,7 +217,7 @@ export interface LoginRootMutationTypeArgs {
 }
 export interface PlaceOrderRootMutationTypeArgs {
   basketId: UUID;
-  billingAddressId: UUID;
+  cardId: string;
   shippingAddressId: UUID;
 }
 export interface RegisterRootMutationTypeArgs {
@@ -494,7 +493,7 @@ export namespace RootMutationTypeResolvers {
   export type PlaceOrderResolver = Resolver<PlaceOrderResponse, PlaceOrderArgs>;
   export interface PlaceOrderArgs {
     basketId: UUID;
-    billingAddressId: UUID;
+    cardId: string;
     shippingAddressId: UUID;
   }
 
@@ -597,7 +596,6 @@ export namespace PlaceOrderResponseResolvers {
 }
 export namespace OrderResolvers {
   export interface Resolvers {
-    billingAddress?: BillingAddressResolver;
     createdAt?: CreatedAtResolver;
     id?: IdResolver;
     items?: ItemsResolver;
@@ -608,7 +606,6 @@ export namespace OrderResolvers {
     user?: UserResolver;
   }
 
-  export type BillingAddressResolver = Resolver<Address>;
   export type CreatedAtResolver = Resolver<NaiveDateTime>;
   export type IdResolver = Resolver<string>;
   export type ItemsResolver = Resolver<(OrderItem | null)[]>;

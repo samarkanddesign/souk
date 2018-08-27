@@ -19,6 +19,7 @@ export const Button = styled('button', {
     fontSize: '100%',
     textDecoration: 'none',
     textAlign: 'center',
+    display: 'inline-block',
   },
   props => ({
     width: props.isFullWidth ? '100%' : undefined,

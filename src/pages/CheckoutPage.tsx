@@ -53,12 +53,12 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                 }
                 return (
                   <PlaceOrderMutation mutation={PLACE_ORDER}>
-                    {placeOrder => (
+                    {(placeOrder, { loading: orderLoading }) => (
                       <Formik
                         initialValues={{
                           basketId,
-                          billingAddressId: '',
                           shippingAddressId: '',
+                          cardId: '',
                         }}
                         onSubmit={values => {
                           placeOrder({ variables: values }).then(r => {
@@ -87,29 +87,16 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                                 })}
                               </Vspace>
 
-                              <h3>Billing Address</h3>
-                              <Vspace>
-                                {addresses.map(address => {
-                                  return (
-                                    <Choice
-                                      key={address.id}
-                                      id={`billing-address-${address.id}`}
-                                      name="billingAddressId"
-                                      value={address.id}
-                                      onChange={handleChange}
-                                    >
-                                      <AddressBlock address={address} />
-                                    </Choice>
-                                  );
-                                })}
-                              </Vspace>
-
                               <CardsQuery query={CARDS}>
-                                {({ data, refetch }) => {
+                                {({ data, refetch, loading: cardsLoading }) => {
+                                  if (cardsLoading) {
+                                    return 'Loading your cards...';
+                                  }
                                   return (
                                     <>
-                                      {data && data.cards
-                                        ? data.cards.map(c => (
+                                      {data && data.cards ? (
+                                        <Vspace>
+                                          {data.cards.map(c => (
                                             <label
                                               key={c.id}
                                               style={{ display: 'block' }}
@@ -117,13 +104,17 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                                               <input
                                                 type="radio"
                                                 value={c.id}
-                                                name="card"
+                                                name="cardId"
+                                                onChange={handleChange}
                                               />
                                               {c.brand} - {c.lastFour} -{' '}
                                               {c.expMonth} / {c.expYear}
                                             </label>
-                                          ))
-                                        : 'cards loading'}
+                                          ))}
+                                        </Vspace>
+                                      ) : (
+                                        'cards loading'
+                                      )}
 
                                       <SaveCardMutation mutation={SAVE_CARD}>
                                         {saveCard => {
@@ -148,6 +139,7 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                               <ButtonLink to="/address/new">
                                 Add new address
                               </ButtonLink>
+                              <br />
                               <Button>Place order</Button>
                             </form>
                           );

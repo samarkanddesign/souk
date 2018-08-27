@@ -78,7 +78,7 @@ server
         <style type="text/css">
         ${css}
         </style>
-        <script src="https://checkout.stripe.com/checkout.js"></script>
+        <script src="https://checkout.stripe.com/checkout.js" async></script>
         <script>
         window.__APOLLO_STATE__=${JSON.stringify(
           serverClient.extract(),

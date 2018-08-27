@@ -106,12 +106,12 @@ export const PLACE_ORDER = gql`
   mutation PlaceOrder(
     $basketId: UUID!
     $billingAddressId: UUID!
-    $shippingAddressId: UUID!
+    $cardId: String!
   ) {
     placeOrder(
       basketId: $basketId
-      billingAddressId: $billingAddressId
       shippingAddressId: $shippingAddressId
+      cardId: $cardId
     ) {
       status
       order {
