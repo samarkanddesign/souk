@@ -115,7 +115,7 @@ export interface RootMutationType {
 
 export interface CreateAddressResponse {
   entity: Address | null;
-  validation: (Validation | null)[] | null;
+  validation: Validation[] | null;
 }
 /** A validation error */
 export interface Validation {
@@ -125,7 +125,7 @@ export interface Validation {
 
 export interface CreateProductResponse {
   entity: Product | null;
-  validation: (Validation | null)[] | null;
+  validation: Validation[] | null;
 }
 
 export interface Session {
@@ -164,12 +164,12 @@ export interface OrderItem {
 
 export interface RegisterResponse {
   entity: Session | null;
-  validation: (Validation | null)[] | null;
+  validation: Validation[];
 }
 
 export interface UpdateProductResponse {
   entity: Product | null;
-  validation: (Validation | null)[] | null;
+  validation: Validation[] | null;
 }
 export interface BasketRootQueryTypeArgs {
   basketId: UUID | null;
@@ -184,6 +184,7 @@ export interface ProductRootQueryTypeArgs {
 }
 export interface ProductListRootQueryTypeArgs {
   page: number | null;
+  pageSize: number | null;
 }
 export interface AddProductToBasketRootMutationTypeArgs {
   basketId: UUID;
@@ -281,6 +282,7 @@ export namespace RootQueryTypeResolvers {
   >;
   export interface ProductListArgs {
     page: number | null;
+    pageSize: number | null;
   }
 
   export type UserAddressesResolver = Resolver<Address[]>;
@@ -545,7 +547,7 @@ export namespace CreateAddressResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Address | null>;
-  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
+  export type ValidationResolver = Resolver<Validation[] | null>;
 } /** A validation error */
 export namespace ValidationResolvers {
   export interface Resolvers {
@@ -563,7 +565,7 @@ export namespace CreateProductResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Product | null>;
-  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
+  export type ValidationResolver = Resolver<Validation[] | null>;
 }
 export namespace SessionResolvers {
   export interface Resolvers {
@@ -635,7 +637,7 @@ export namespace RegisterResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Session | null>;
-  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
+  export type ValidationResolver = Resolver<Validation[]>;
 }
 export namespace UpdateProductResponseResolvers {
   export interface Resolvers {
@@ -644,5 +646,5 @@ export namespace UpdateProductResponseResolvers {
   }
 
   export type EntityResolver = Resolver<Product | null>;
-  export type ValidationResolver = Resolver<(Validation | null)[] | null>;
+  export type ValidationResolver = Resolver<Validation[] | null>;
 }

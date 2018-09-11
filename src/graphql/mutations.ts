@@ -105,7 +105,7 @@ export class RegisterMutation extends Mutation<
 export const PLACE_ORDER = gql`
   mutation PlaceOrder(
     $basketId: UUID!
-    $billingAddressId: UUID!
+    $shippingAddressId: UUID!
     $cardId: String!
   ) {
     placeOrder(

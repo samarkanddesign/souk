@@ -7,9 +7,10 @@ import { CreateAddressMutation, CREATE_ADDRESS } from '../graphql/mutations';
 import { Button } from '../components/Button';
 import Input from '../components/Input';
 import { Vspace } from '../components/Vspace';
-import { Validation } from '../../types/gql';
+import { Validation, Address } from '../../types/gql';
 import { RouteComponentProps } from 'react-router';
 import { required } from '../utils/validation';
+import { USER_ADDRESSES } from '../graphql/queries';
 
 type Props = RouteComponentProps<{}>;
 
@@ -59,7 +60,24 @@ export const CreateAddressPage = ({ history }: Props) => {
   return (
     <div>
       <h2>Add an address</h2>
-      <CreateAddressMutation mutation={CREATE_ADDRESS}>
+      <CreateAddressMutation
+        mutation={CREATE_ADDRESS}
+        update={(cache, res) => {
+          Option.all([
+            Option(res.data).flatMap(d => Option(d.createAddress.entity)),
+            Option(
+              cache.readQuery<{ userAddresses: Address[] }>({
+                query: USER_ADDRESSES,
+              }),
+            ).map(({ userAddresses }) => userAddresses),
+          ]).map(([newAddress, userAddresses]) => {
+            cache.writeQuery({
+              query: USER_ADDRESSES,
+              data: { userAddresses: userAddresses.concat(newAddress) },
+            });
+          });
+        }}
+      >
         {(createAddress, { loading }) => {
           return (
             <Formik
