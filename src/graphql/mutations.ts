@@ -12,11 +12,11 @@ import {
   CreateAddressRootMutationTypeArgs,
   RegisterResponse,
   RegisterRootMutationTypeArgs,
-  Card,
   SaveCardRootMutationTypeArgs,
+  SaveCardResponse,
 } from '../../types/gql';
 
-export const CreateBasket = gql`
+export const CREATE_BASKET = gql`
   mutation CreateBasket {
     createBasket {
       ...BasketFragment
@@ -30,7 +30,7 @@ export class CreateBasketMutation extends Mutation<
   {}
 > {}
 
-export const RemoveProduct = gql`
+export const REMOVE_PRODUCT = gql`
   mutation RemoveProduct($basketId: UUID!, $itemId: Int!) {
     removeProductFromBasket(basketId: $basketId, itemId: $itemId) {
       ...BasketFragment
@@ -44,7 +44,7 @@ export class RemoveItemMutation extends Mutation<
   RemoveProductFromBasketRootMutationTypeArgs
 > {}
 
-export const AddProductToBasket = gql`
+export const ADD_PRODUCT_TO_BASKET = gql`
   mutation AddProductTobasket($basketId: UUID!, $productId: Int!) {
     addProductToBasket(
       basketId: $basketId
@@ -173,16 +173,19 @@ export class CreateAddressMutation extends Mutation<
 export const SAVE_CARD = gql`
   mutation SaveCard($token: String!) {
     saveCard(token: $token) {
-      id
-      expYear
-      expMonth
-      brand
-      lastFour
+      cards {
+        id
+        expYear
+        expMonth
+        brand
+        lastFour
+      }
+      error
     }
   }
 `;
 
 export class SaveCardMutation extends Mutation<
-  { saveCard: Card[] },
+  { saveCard: SaveCardResponse },
   SaveCardRootMutationTypeArgs
 > {}

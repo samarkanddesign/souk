@@ -69,8 +69,8 @@ export interface ProductImage {
 
 export interface Card {
   brand: string;
-  expMonth: number;
-  expYear: number;
+  expMonth: string;
+  expYear: string;
   funding: string;
   id: string;
   lastFour: string;
@@ -109,7 +109,7 @@ export interface RootMutationType {
   placeOrder: PlaceOrderResponse;
   register: RegisterResponse | null /** Register a new user and login */;
   removeProductFromBasket: Basket | null /** Remove a product from a basket */;
-  saveCard: Card[];
+  saveCard: SaveCardResponse | null;
   updateProduct: UpdateProductResponse | null /** Update an existing product */;
 }
 
@@ -145,6 +145,7 @@ export interface PlaceOrderResponse {
 }
 
 export interface Order {
+  billingAddress: Address;
   createdAt: NaiveDateTime;
   id: string;
   items: (OrderItem | null)[];
@@ -165,6 +166,11 @@ export interface OrderItem {
 export interface RegisterResponse {
   entity: Session | null;
   validation: Validation[];
+}
+
+export interface SaveCardResponse {
+  cards: Card[] | null;
+  error: string | null;
 }
 
 export interface UpdateProductResponse {
@@ -218,6 +224,7 @@ export interface LoginRootMutationTypeArgs {
 }
 export interface PlaceOrderRootMutationTypeArgs {
   basketId: UUID;
+  billingAddressId: UUID;
   cardId: string;
   shippingAddressId: UUID;
 }
@@ -379,8 +386,8 @@ export namespace CardResolvers {
   }
 
   export type BrandResolver = Resolver<string>;
-  export type ExpMonthResolver = Resolver<number>;
-  export type ExpYearResolver = Resolver<number>;
+  export type ExpMonthResolver = Resolver<string>;
+  export type ExpYearResolver = Resolver<string>;
   export type FundingResolver = Resolver<string>;
   export type IdResolver = Resolver<string>;
   export type LastFourResolver = Resolver<string>;
@@ -495,6 +502,7 @@ export namespace RootMutationTypeResolvers {
   export type PlaceOrderResolver = Resolver<PlaceOrderResponse, PlaceOrderArgs>;
   export interface PlaceOrderArgs {
     basketId: UUID;
+    billingAddressId: UUID;
     cardId: string;
     shippingAddressId: UUID;
   }
@@ -518,7 +526,10 @@ export namespace RootMutationTypeResolvers {
     itemId: number;
   }
 
-  export type SaveCardResolver = Resolver<Card[], SaveCardArgs>;
+  export type SaveCardResolver = Resolver<
+    SaveCardResponse | null,
+    SaveCardArgs
+  >;
   export interface SaveCardArgs {
     token: string;
   }
@@ -598,6 +609,7 @@ export namespace PlaceOrderResponseResolvers {
 }
 export namespace OrderResolvers {
   export interface Resolvers {
+    billingAddress?: BillingAddressResolver;
     createdAt?: CreatedAtResolver;
     id?: IdResolver;
     items?: ItemsResolver;
@@ -608,6 +620,7 @@ export namespace OrderResolvers {
     user?: UserResolver;
   }
 
+  export type BillingAddressResolver = Resolver<Address>;
   export type CreatedAtResolver = Resolver<NaiveDateTime>;
   export type IdResolver = Resolver<string>;
   export type ItemsResolver = Resolver<(OrderItem | null)[]>;
@@ -638,6 +651,15 @@ export namespace RegisterResponseResolvers {
 
   export type EntityResolver = Resolver<Session | null>;
   export type ValidationResolver = Resolver<Validation[]>;
+}
+export namespace SaveCardResponseResolvers {
+  export interface Resolvers {
+    cards?: CardsResolver;
+    error?: ErrorResolver;
+  }
+
+  export type CardsResolver = Resolver<Card[] | null>;
+  export type ErrorResolver = Resolver<string | null>;
 }
 export namespace UpdateProductResponseResolvers {
   export interface Resolvers {

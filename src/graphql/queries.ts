@@ -25,7 +25,7 @@ export class BasketQuery extends Query<
   BasketRootQueryTypeArgs
 > {}
 
-export const SingleProduct = gql`
+export const SINGLE_PRODUCT = gql`
   query SingleProduct($slug: String) {
     product(slug: $slug) {
       id
@@ -53,7 +53,7 @@ export class AllProductsQuery extends Query<
   ProductListRootQueryTypeArgs
 > {}
 
-export const allProducts = gql`
+export const ALL_PRODUCTS = gql`
   query AllProducts($page: Int) {
     productList(page: $page) {
       products {

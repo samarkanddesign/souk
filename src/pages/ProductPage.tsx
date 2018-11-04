@@ -3,8 +3,11 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Option } from 'catling';
 import ProductDetail from '../components/ProductDetail';
 import NotFound from '../components/NotFound';
-import { AddToBasketMutation, AddProductToBasket } from '../graphql/mutations';
-import { SingleProductQuery, SingleProduct } from '../graphql/queries';
+import {
+  AddToBasketMutation,
+  ADD_PRODUCT_TO_BASKET,
+} from '../graphql/mutations';
+import { SingleProductQuery, SINGLE_PRODUCT } from '../graphql/queries';
 import { State, Action } from '../store/reducers';
 import { connect } from 'react-redux';
 import { SetBasketVisibility } from '../store/reducers/basket';
@@ -26,7 +29,7 @@ type Props = RouteComponentProps<{ slug: string }> &
 const ProductPage = ({ match, basketId, showBasket }: Props) => {
   return (
     <SingleProductQuery
-      query={SingleProduct}
+      query={SINGLE_PRODUCT}
       variables={{ slug: match.params.slug }}
     >
       {({ data, loading }) => {
@@ -37,7 +40,7 @@ const ProductPage = ({ match, basketId, showBasket }: Props) => {
           .flatMap(d => Option(d.product))
           .map(product => (
             <AddToBasketMutation
-              mutation={AddProductToBasket}
+              mutation={ADD_PRODUCT_TO_BASKET}
               onError={e => alert(e.message)}
               onCompleted={showBasket}
             >

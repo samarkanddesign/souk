@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { Button } from './';
-
-// interface State {}
+import { Button } from '../../components';
 
 interface Props {
   saveCard: (token: string) => void;
 }
 
-export class CardForm extends React.Component<Props, any> {
-  state = {
+interface State {
+  handler: { open: () => void };
+}
+
+export class StripeCardForm extends React.Component<Props, State> {
+  readonly state: State = {
     handler: (window as any).StripeCheckout.configure({
       key: 'pk_test_CrdIYtIuU9RU1ZCkezeHLQVF',
       locale: 'auto',
@@ -25,6 +27,8 @@ export class CardForm extends React.Component<Props, any> {
 
   render() {
     return (
+      // this handler needs to be called from an anonymous function to ensure
+      // stripe allows showing the checkout page
       <Button onClick={() => this.state.handler.open()} type="button">
         Add Card
       </Button>

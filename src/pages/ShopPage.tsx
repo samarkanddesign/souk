@@ -5,7 +5,7 @@ import { Option } from 'catling';
 import { Link } from 'react-router-dom';
 
 import { ProductGrid } from '../components/ProductGrid';
-import { AllProductsQuery, allProducts } from '../graphql/queries';
+import { AllProductsQuery, ALL_PRODUCTS } from '../graphql/queries';
 import styled from 'react-emotion';
 import { spacing, media } from '../components/style';
 
@@ -37,7 +37,7 @@ const ShopPage = (props: Props) => {
         <h1>Shop</h1>
         <p>Page {page}</p>
         <AllProductsQuery
-          query={allProducts}
+          query={ALL_PRODUCTS}
           variables={{ page, pageSize: 12 }}
         >
           {({ data }) => {

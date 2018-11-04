@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CreateBasketMutation, CreateBasket } from '../graphql/mutations';
+import { CreateBasketMutation, CREATE_BASKET } from '../graphql/mutations';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Action, State } from '../store/reducers';
@@ -21,7 +21,7 @@ export const BasketInitializer = ({ basketId, setBasketId }: Props) => {
   }
   return (
     <CreateBasketMutation
-      mutation={CreateBasket}
+      mutation={CREATE_BASKET}
       onCompleted={r => setBasketId(r.createBasket.id)}
     >
       {f => <CallCreateBasket createBasket={f} />}

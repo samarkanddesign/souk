@@ -28,7 +28,7 @@ import {
   CardsQuery,
   CARDS,
 } from '../graphql/queries';
-import { CardForm } from '../components/CardForm';
+import CardForm from './checkout/CardForm';
 
 type Props = StateMappedToProps & DispatchMappedToProps;
 
@@ -61,7 +61,12 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                           cardId: '',
                         }}
                         onSubmit={values => {
-                          placeOrder({ variables: values }).then(r => {
+                          placeOrder({
+                            variables: {
+                              ...values,
+                              billingAddressId: values.shippingAddressId,
+                            },
+                          }).then(r => {
                             forgetBasket();
                           });
                         }}
@@ -116,21 +121,7 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                                         'cards loading'
                                       )}
 
-                                      <SaveCardMutation mutation={SAVE_CARD}>
-                                        {saveCard => {
-                                          return (
-                                            <div>
-                                              <CardForm
-                                                saveCard={token => {
-                                                  saveCard({
-                                                    variables: { token },
-                                                  }).then(() => refetch());
-                                                }}
-                                              />
-                                            </div>
-                                          );
-                                        }}
-                                      </SaveCardMutation>
+                                      <CardForm refetchCards={refetch} />
                                     </>
                                   );
                                 }}

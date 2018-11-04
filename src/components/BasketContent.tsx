@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 
 import { BasketItem } from '../../types/gql';
 import { ResetList } from './Styled';
-import { RemoveItemMutation, RemoveProduct } from '../graphql/mutations';
+import { RemoveItemMutation, REMOVE_PRODUCT } from '../graphql/mutations';
 
 import { ProductThumb } from './ProductThumb';
 import Price from './Price';
@@ -73,7 +73,7 @@ export const BasketContent = ({
       {items.map(item => (
         <RemoveItemMutation
           key={item.id}
-          mutation={RemoveProduct}
+          mutation={REMOVE_PRODUCT}
           variables={{
             basketId: basketId,
             itemId: parseInt(item.id, 10),
