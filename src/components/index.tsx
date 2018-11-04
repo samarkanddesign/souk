@@ -5,3 +5,4 @@ export { Choice } from './Choice';
 export { AddressBlock } from './AddressBlock';
 export { Button, ButtonLink } from './Button';
 export { FailWhale } from './FailWhale';
+export { Input } from './Input';
