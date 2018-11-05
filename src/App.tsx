@@ -52,7 +52,7 @@ const App = () => (
   </Wrapper>
 );
 
-const AuthRoute = ({ component: Component, ...rest }: RouteProps) => {
+const AuthRoute = ({ component: Component, ...rest }: any) => {
   return (
     <Route
       {...rest}
@@ -65,7 +65,7 @@ const AuthRoute = ({ component: Component, ...rest }: RouteProps) => {
   );
 };
 
-const GuestRoute = ({ component: Component, ...rest }: RouteProps) => {
+const GuestRoute = ({ component: Component, ...rest }: any) => {
   return (
     <Route
       {...rest}

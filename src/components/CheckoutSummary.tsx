@@ -13,7 +13,7 @@ export const CheckoutSummary = ({ basketId }: Props) => {
     <BasketQuery query={GET_BASKET} variables={{ basketId }}>
       {({ data, loading }) => {
         if (loading) {
-          return <span>'loading...'</span>;
+          return <span>loading...</span>;
         }
 
         return Option(data)
