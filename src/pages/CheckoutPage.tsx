@@ -2,12 +2,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Formik } from 'formik';
 import { Option } from 'catling';
-import {
-  PlaceOrderMutation,
-  PLACE_ORDER,
-  SaveCardMutation,
-  SAVE_CARD,
-} from '../graphql/mutations';
+import { PlaceOrderMutation, PLACE_ORDER } from '../graphql/mutations';
 import {
   StateMappedToProps,
   DispatchMappedToProps,
@@ -29,6 +24,7 @@ import {
   CARDS,
 } from '../graphql/queries';
 import CardForm from './checkout/CardForm';
+import { Card } from '../../types/gql';
 
 type Props = StateMappedToProps & DispatchMappedToProps;
 
@@ -62,16 +58,18 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                         }}
                         onSubmit={values => {
                           placeOrder({
-                            variables: {
-                              ...values,
-                              billingAddressId: values.shippingAddressId,
-                            },
+                            variables: values,
                           }).then(r => {
                             forgetBasket();
                           });
                         }}
                       >
-                        {({ handleSubmit, handleChange }) => {
+                        {({
+                          handleSubmit,
+                          handleChange,
+                          values,
+                          setFieldValue,
+                        }) => {
                           return (
                             <form onSubmit={handleSubmit}>
                               <h3>Shipping Address</h3>
@@ -90,48 +88,60 @@ export const CheckoutPage = ({ basketId, forgetBasket }: Props) => {
                                     </Choice>
                                   );
                                 })}
+
+                                <h3>Payment Method</h3>
+
+                                <CardsQuery query={CARDS}>
+                                  {({
+                                    data,
+                                    refetch,
+                                    loading: cardsLoading,
+                                  }) => {
+                                    if (cardsLoading) {
+                                      return 'Loading your cards...';
+                                    }
+                                    return (
+                                      <>
+                                        <div>
+                                          {data && data.cards
+                                            ? data.cards.map(c => (
+                                                <Choice
+                                                  key={c.id}
+                                                  name="cardId"
+                                                  id={`credit-card-${c.id}`}
+                                                  onChange={handleChange}
+                                                  value={c.id}
+                                                >
+                                                  <div style={{ flex: 1 }}>
+                                                    {c.brand} ending in{' '}
+                                                    {c.lastFour}
+                                                  </div>
+                                                  <div>
+                                                    {c.expMonth}/{c.expYear}
+                                                  </div>
+                                                </Choice>
+                                              ))
+                                            : 'cards loading'}
+                                        </div>
+
+                                        <CardForm
+                                          refetchCards={refetch}
+                                          onSaveCard={cardId =>
+                                            setFieldValue('cardId', cardId)
+                                          }
+                                        />
+                                      </>
+                                    );
+                                  }}
+                                </CardsQuery>
+                                <div>
+                                  <ButtonLink to="/address/new">
+                                    Add new address
+                                  </ButtonLink>
+
+                                  <Button>Place order</Button>
+                                </div>
                               </Vspace>
-
-                              <CardsQuery query={CARDS}>
-                                {({ data, refetch, loading: cardsLoading }) => {
-                                  if (cardsLoading) {
-                                    return 'Loading your cards...';
-                                  }
-                                  return (
-                                    <>
-                                      {data && data.cards ? (
-                                        <Vspace>
-                                          {data.cards.map(c => (
-                                            <label
-                                              key={c.id}
-                                              style={{ display: 'block' }}
-                                            >
-                                              <input
-                                                type="radio"
-                                                value={c.id}
-                                                name="cardId"
-                                                onChange={handleChange}
-                                              />
-                                              {c.brand} - {c.lastFour} -{' '}
-                                              {c.expMonth} / {c.expYear}
-                                            </label>
-                                          ))}
-                                        </Vspace>
-                                      ) : (
-                                        'cards loading'
-                                      )}
-
-                                      <CardForm refetchCards={refetch} />
-                                    </>
-                                  );
-                                }}
-                              </CardsQuery>
-
-                              <ButtonLink to="/address/new">
-                                Add new address
-                              </ButtonLink>
-                              <br />
-                              <Button>Place order</Button>
                             </form>
                           );
                         }}

@@ -2,30 +2,28 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import { greys } from './style';
 
-export const Button = styled('button', {
-  shouldForwardProp: prop => prop !== 'isFullWidth',
-})<{ isFullWidth?: boolean }>(
-  {
-    padding: '1rem 2rem',
-    backgroundColor: greys.b,
-    border: `2px solid ${greys.b}`,
-    '&:hover': {
-      backgroundColor: greys.c,
-      borderColor: greys.c,
-    },
-
-    cursor: 'pointer',
-    color: '#fff',
-    fontSize: '100%',
-    textDecoration: 'none',
-    textAlign: 'center',
-    display: 'inline-block',
+export const Button = styled('button')({
+  padding: '1rem 2rem',
+  backgroundColor: greys.b,
+  border: `2px solid ${greys.b}`,
+  '&:hover': {
+    backgroundColor: greys.c,
+    borderColor: greys.c,
   },
-  props => ({
-    width: props.isFullWidth ? '100%' : undefined,
-    display: props.isFullWidth ? 'block' : undefined,
-  }),
-);
+  lineHeight: 1,
+  verticalAlign: 'bottom',
+  cursor: 'pointer',
+  color: '#fff',
+  fontSize: '100%',
+  textDecoration: 'none',
+  textAlign: 'center',
+  display: 'inline-block',
+});
+
+export const FullWidthButton = styled(Button)`
+  width: 100%;
+  display: block;
+`;
 
 export const TextButton = styled('button')`
   background: transparent;
@@ -35,3 +33,4 @@ export const TextButton = styled('button')`
 `;
 
 export const ButtonLink = Button.withComponent(Link);
+export const FullWidthButtonLink = FullWidthButton.withComponent(Link);

@@ -331,8 +331,6 @@ export interface LoginRootMutationTypeArgs {
 export interface PlaceOrderRootMutationTypeArgs {
   basketId: Uuid;
 
-  billingAddressId: Uuid;
-
   cardId: string;
 
   shippingAddressId: Uuid;

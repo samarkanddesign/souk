@@ -4,7 +4,7 @@ import { GET_BASKET, BasketQuery } from '../graphql/queries';
 import { connect } from 'react-redux';
 import { State, Action } from '../store/reducers';
 import BasketInitializer from './BasketInitializer';
-import { TextButton, ButtonLink } from './Button';
+import { TextButton, FullWidthButtonLink } from '../components';
 import styled from 'react-emotion';
 import { Dispatch } from 'redux';
 import { SetBasketVisibility } from '../store/reducers/basket';
@@ -101,12 +101,12 @@ export const Basket = ({
               />
               <p>TOTAL: £{basketTotal(items)}</p>
               <BasketCtaContainer>
-                <ButtonLink to="/basket" isFullWidth={true}>
+                <FullWidthButtonLink to="/basket">
                   Go to basket
-                </ButtonLink>
-                <ButtonLink to="/checkout" isFullWidth={true}>
+                </FullWidthButtonLink>
+                <FullWidthButtonLink to="/checkout">
                   Checkout now
-                </ButtonLink>
+                </FullWidthButtonLink>
               </BasketCtaContainer>
             </BasketContainer>
           </>

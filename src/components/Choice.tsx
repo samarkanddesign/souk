@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'react-emotion';
-import { spacing, greys } from './style';
+import { spacing, greys, palette } from './style';
 
 interface OwnProps {
   children: React.ReactNode;
@@ -10,32 +10,50 @@ type Props = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'id' | 'type'> &
   OwnProps;
 
 const ChoiceWrapper = styled('div')`
+  display: flex;
   label {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
-    height: 100%;
     cursor: pointer;
-    border: 1px solid ${greys.f};
+    border-radius: ${spacing.ant};
     padding: ${spacing.cat};
+    > :not(:first-child) {
+      margin-left: ${spacing.cat};
+    }
+    &:hover {
+      background: ${greys.h};
+    }
   }
 
   > input {
     display: none;
+
     &:checked + label {
-      background: ${greys.f};
-      border-color: ${greys.c};
-    }
-    & + label:hover {
-      background: ${greys.h};
+      background: ${greys.g};
+      > div:first-child {
+        background: ${palette.ui.green};
+      }
     }
   }
+`;
+
+const Spot = styled('div')`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${greys.e};
 `;
 
 export const Choice = ({ children, id, ...inputProps }: Props) => {
   return (
     <ChoiceWrapper>
       <input {...inputProps} id={id} type="radio" />
-      <label htmlFor={id}>{children}</label>
+      <label htmlFor={id}>
+        <Spot />
+
+        {children}
+      </label>
     </ChoiceWrapper>
   );
 };

@@ -29,6 +29,17 @@ export const greys = {
   i: '#FFFFFF',
 };
 
+export const palette = {
+  ui: {
+    green: 'green',
+    red: 'red',
+  },
+};
+
+const shadows = {
+  raised: '0 4px 6px 0 hsla(0, 0%, 0%, 0.2)',
+};
+
 export const animation = {
   spin: keyframes`
 from {transform: rotate(0deg);}
